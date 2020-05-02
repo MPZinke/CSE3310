@@ -92,4 +92,6 @@ void GAME_SERVER::leave(chat_participant_ptr participant){
         participants.erase(participants.begin()+i);
         players.erase(players.begin()+i);
     }
+    //Implement round logic
+    //currentRound.leave(i);
 }
