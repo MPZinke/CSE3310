@@ -19,14 +19,10 @@
 #include"chat_client.h"
 #include"asio.hpp"
 
-bool sstreamToOut(std::stringstream &inbuffer) {
-    std::cout << inbuffer.str();
-    return true;
-}
-
 class clientmanager{
     public:
 
+        //This is where we read from the chat messages
         bool bufferToOut(){
             std::cout << inbuffer.rdbuf();
             return true;
