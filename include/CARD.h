@@ -4,7 +4,8 @@
 #include <json.hpp>
 
 enum RANK_ENUM {
-    TWO = 2,
+    ACE,
+    TWO,
     THREE,
     FOUR,
     FIVE,
