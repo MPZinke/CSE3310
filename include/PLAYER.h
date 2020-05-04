@@ -20,6 +20,7 @@ public:
 
     std::string id();
     int money();
+    void money(int);  // set current money level
     int current_bet();
     HAND current_hand();
     PLAY current_play();

@@ -26,7 +26,7 @@
 
 class DISPLAY: public Gtk::Window {
 public:
-    DISPLAY(int player_number);
+    DISPLAY(int player_number, std::stringstream &inbuffer);
     ~DISPLAY();
 
     void add_cards_to_player(std::vector<std::string> card_names);
@@ -44,6 +44,8 @@ private:
     PLAYER_DISPLAY* all_players[6] = {};
 
     Gtk::Box* main_box;
+
+    std::stringstream &inbuffer;
 
     // ———————————— OTHER PLAYERS & POT ————————————
 

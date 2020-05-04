@@ -6,56 +6,96 @@
 #include "PLAYER.h"
 #include "PLAY.h"
 
-typedef std::shared_ptr<chat_participant> chat_participant_ptr;
 
-GAME_SERVER::GAME_SERVER(): currentRound{ROUND{}}, deck{DECK{}}, players{std::vector<PLAYER*>{}}, participants{std::vector<chat_participant_ptr>{}} {
-    deck.shuffle();
-}
-
-void GAME_SERVER::loop() {
+GAME_SERVER::GAME_SERVER()
+: players{std::vector<PLAYER*>{}}, participants{std::vector<chat_participant_ptr>{}} {
 
 }
+
 
 void GAME_SERVER::addPlayer(chat_participant_ptr player, chat_message msg) {
-    nlohmann::json msgjson = msg.getJson();
+	nlohmann::json msgjson = msg.getJson();
 
-    participants.push_back(player);
-    std::string name = "", id="";
-    players.push_back(new PLAYER{});
-    if(players.size() == 4){
-        for(int i = 0; i < 4; i++){
-            players[i]->setHand(deck.draw_card(5));
-            PLAY play{MATCHSTART, players[i]->current_hand()};
-            auto temp = nlohmann::json{play};
-            participants[i]->deliver(chat_message{temp});
-            std::cout << chat_message{temp}.body() << std::endl; 
-        }
-    }
+	participants.push_back(player);
+	std::string name = "", id="";
+	players.push_back(new PLAYER{});
+	if(players.size() == 4) start_game();
 }
+
+
+void GAME_SERVER::start_game()
+{
+	game_started = true;
+	currentRound = new ROUND(0, &players, &message_queue);
+
+	for(int i = 0; i < (int) players.size(); i++){
+        PLAY tempPlay{};
+        tempPlay.type = PLAYTYPE::MATCHSTART;
+        tempPlay.tradedCards = players[i]->current_hand().getCards();
+        tempPlay.ID = players[i]->id();
+		auto temp = nlohmann::json{tempPlay};
+		participants[i]->deliver(chat_message{temp});
+		std::cout << chat_message{temp}.body() << std::endl; 
+	}
+	// send first person bet message
+	auto temp = nlohmann::json{PLAY{}};
+	participants[0]->deliver(chat_message{temp});
+}
+
 
 void GAME_SERVER::processInput(chat_message msg) {
-    if(msg.decode_header()){
-        std::stringstream str;
-        str.write(msg.body(), msg.body_length());
-        nlohmann::json j{str.str()};
-        std::cout << j << std::endl;
+	if(msg.decode_header())
+	{
+		std::stringstream str;
+		str.write(msg.body(), msg.body_length());
+		nlohmann::json j{str.str()};
+
+		currentRound->process_play(PLAY{j});
+		send_queued_messages();
+		if(currentRound->is_finished()) start_new_round();
+	}
+}
+
+
+void GAME_SERVER::start_new_round()
+{
+	// check for game over...or don't
+	ROUND* next_round = new ROUND(currentRound->round_number() + 1, &players, &message_queue);
+	delete currentRound;
+	currentRound = next_round;
+}
+
+
+// ——————————————————— UTILITY ———————————————————
+
+bool GAME_SERVER::has_started()
+{
+	return game_started;
+}
+
+
+void GAME_SERVER::send_queued_messages()
+{
+	while(message_queue.size())
+	{
+		auto message = message_queue[0].begin();
+		participants[message->first]->deliver(message->second);
+		std::cout << message->second.body() << std::endl; 
+		message_queue.erase(message_queue.begin());
+	}
+}
+
+void GAME_SERVER::leave(chat_participant_ptr participant){
+    int i;
+    bool flag = false;
+    for(i = 0; i < (int) participants.size(); i++){
+        if(flag |= participants[i] == participant)
+            break;
     }
-}
-
-void GAME_SERVER::processRound() {
-    
-}
-
-void GAME_SERVER::updatePlayers() {
-
-}
-
-bool GAME_SERVER::processPacket() {
-
-    return true;
-}
-
-bool GAME_SERVER::updateRound() {
-
-    return true;
+    if(flag){
+        participants.erase(participants.begin()+i);
+        players.erase(players.begin()+i);
+    }
+    //Implement round logic
+    //currentRound.leave(i);
 }

@@ -10,9 +10,10 @@ void from_json(const nlohmann::json& j, PLAY& play) {
     play.bet = j.at("bet");
     play.tradedCards = j.at("tradedCards").get<std::vector<Card>>();
     play.currenthand = j.at("currenthand").get<HAND>();
+    play.ID = j.at("ID").get<std::string>();
 }
 
 void to_json(nlohmann::json& j, const PLAY& play) {
-    j = nlohmann::json{{"type", play.type}, {"bet", play.bet}, {"tradedCards", play.tradedCards}, {"currenthand", play.currenthand}};
+    j = nlohmann::json{{"type", play.type}, {"bet", play.bet}, {"tradedCards", play.tradedCards}, {"currenthand", play.currenthand}, {"ID", play.ID}};
 }
 

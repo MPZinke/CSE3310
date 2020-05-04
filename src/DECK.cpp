@@ -33,7 +33,7 @@ bool DECK::still_has_cards() {
 }
 
 void DECK::shuffle(){
-    for(int i = 0; i < 52/2; i++){
+    for(int i = 0; i < 52; i++){
         for(int k = i; k < 52; k++){
             auto temp = _cards[i];
             int si = (std::rand()%52);
@@ -42,6 +42,7 @@ void DECK::shuffle(){
         }
     }
 }
+
 void DECK::shuffleRemaining(){
     for(int i = _next_card_in_deck_index; i < (52-_next_card_in_deck_index)/2; i++){
         for(int k = i; k < 52; k++){
