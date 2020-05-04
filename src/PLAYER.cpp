@@ -34,6 +34,13 @@ int PLAYER::money() {
     return _money;
 }
 
+
+void PLAYER::money(int new_amount)
+{
+    _money = new_amount;
+}
+
+
 int PLAYER::current_bet() {
     return _current_bet;
 }

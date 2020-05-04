@@ -5,35 +5,50 @@
 #include"CARD.h"
 #include "PLAYER.h"
 
-#include <vector>
+#include<map>
 #include<string>
+#include<vector>
+
+typedef std::vector<std::map<int, chat_message>> MessageQueue;
 
 class ROUND {
 public:
-	ROUND(int round_number, std::vector<PLAYER*> remaining_players);
+	ROUND(int, std::vector<PLAYER*>*, MessageQueue*);
 
-	void deal();
 	Card draw_card();
 	std::vector<Card> draw_card(int);
-	void take_bets();
 	void finish_round();
 
-	void move(const chat_message& message);
 	std::string return_message();
-    void process_play(nlohmann::json play);
+	void process_play(nlohmann::json play);
 
 	int round_number();
-	bool round_is_finished();
+	bool is_finished();
+	bool all_other_players_have_folded();
+	int highest_bet();
+	bool currently_taking_bets();
+	void remove_current_player();
+	void add_message_to_queue(PLAY);
+	void add_message_to_queue(int, PLAY);
 
 	~ROUND();
 
 private:
 	int _round_number;
-	std::vector<PLAYER*>  _remaining_players;
+	int _round_phase = 0;  // whether the round is betting or trading (even bet; odd trade) 5 = end
+	std::vector<PLAYER*>* _remaining_players;
+	MessageQueue* message_queue;
 	DECK _deck;
-	int _current_bet;
+
 	int _current_pot;
 	int _current_player;
+
+	bool _betting = false;  // round is currently set to betting
+	int _player_bets[5] = {0, 0, 0, 0, 0};
+	bool _player_folds[5] = {false, false, false, false, false};
+	int _bet_player;
+
+	bool bet_amount_exceeds_other_players_worth(int);
 };
 
 #endif

@@ -8,10 +8,11 @@
 #include "DECK.h"
 #include "ROUND.h"
 
-#include <vector>
 #include<string>
+#include <vector>
 
 typedef std::shared_ptr<chat_participant> chat_participant_ptr;
+typedef std::vector<std::map<int, chat_message>> MessageQueue;
 
 
 class GAME_SERVER {
@@ -20,21 +21,23 @@ class GAME_SERVER {
 		
 		void addPlayer(chat_participant_ptr player, chat_message msg); 
 		void start_game();
-
-		std::string processPacket(const chat_message& message);
-		void processRound();
-        void processInput(chat_message msg);
-		void updatePlayers();
         void leave(chat_participant_ptr participant);
-
-		bool updateRound();
-        bool has_started();
+		void processInput(chat_message msg);
+		bool has_started();
 
 	private:
+		void processRound();
+		void send_queued_messages();
+		void updatePlayers();
+
+		bool updateRound();
+		void start_new_round();
+
 		bool game_started = false;
 		ROUND* currentRound;
 		std::vector<PLAYER*> players;
 		std::vector<chat_participant_ptr> participants;
+		MessageQueue message_queue;
 };
 
 #endif

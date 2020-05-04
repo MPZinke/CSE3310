@@ -63,5 +63,5 @@ void chat_room::deliver(const chat_message& msg) {
 void chat_room::message_received(const chat_message& message)
 {
     if(!game.has_started()) ;  // handle premature message
-    game.processPacket(message);
+    game.processInput(message);
 }

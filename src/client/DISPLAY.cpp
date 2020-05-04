@@ -13,8 +13,9 @@
 
 #include"DISPLAY.h"
 
-DISPLAY::DISPLAY(int player_number) :
-    _player_number{player_number} {
+DISPLAY::DISPLAY(int player_number, std::stringstream &inbuffer) :
+    _player_number{player_number},
+    inbuffer{inbuffer} {
     main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0));
     add(*main_box);
 
