@@ -81,6 +81,28 @@ DISPLAY::~DISPLAY() {
     for(int x = 0; x < 6; x++) if(all_players[x]) delete all_players[x];
 }
 
+void DISPLAY::get_cards(){
+    std::string msg = inbuffer.rdbuf()->str();
+    if(msg != ""){
+        try{
+            nlohmann:json j = nlohmann::json::parse(msg);
+            PLAY play = j[0].get<PLAY>();
+            if(play.type == 5){
+                std::vector<Card> cards = play.tradedCards;
+                std::vector<std::string> cardNames;
+                Card c;
+                for(int i = 0; i < 5; i++){
+                    c = cards[i];
+                    cardNames.push_back(c.toEnglish());
+                }
+                user->assign_cards(cardNames);
+            }
+        }
+        catch(std::exception& e){
+            std::cerr << "Exception: " e.what() << "\n";
+        }
+    }
+}
 
 // new player joined game after display created; create dependencies & add to players array
 void DISPLAY::assign_new_player_to_all_players_array(int player_number, std::string player_name) {
