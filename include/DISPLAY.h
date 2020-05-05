@@ -24,10 +24,15 @@
 #include"PLAYER_DISPLAY.h"
 #include"USER.h"
 
+#include "PLAY.h"
+#include <iostream>
+
 class DISPLAY: public Gtk::Window {
 public:
     DISPLAY(int player_number, std::stringstream &inbuffer);
     ~DISPLAY();
+    
+    void get_cards();
 
     void add_cards_to_player(std::vector<std::string> card_names);
     void clear_all_cards_from_player();
