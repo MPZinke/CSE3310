@@ -63,14 +63,11 @@ DISPLAY::DISPLAY(int player_number, std::stringstream &inbuffer) :
     // ———— BOTTOM ROW ————
     bottom_row_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0));
     main_box->pack_start(*bottom_row_box);
-    user = new USER(_player_number, "ME :)", bottom_row_box);
+    user = new USER(_player_number, "YOU", bottom_row_box);
     user->override_color(*COLOR_WHITE);
 
-    std::vector<std::string> test_names =	{
-        "10 of Spades", "Jack of Spades", "Queen of Spades",
-        "King of Spades", "Ace of Spades"
-    };
-    user->assign_cards(test_names);
+    get_cards();
+        
     for(int x = 1; x < _player_number; x++) all_players[x]->display_card_backs();
 
     main_box->show_all();
