@@ -27,9 +27,9 @@ enum SUIT_ENUM {
 };
 
 const std::map<int, std::string> RANK_STRINGS =	{
-    {2, "Two"}, {3, "Three"}, {4, "Four"},
-    {5, "Five"}, {6, "Six"}, {7, "Seven"},
-    {8, "Eight"}, {9, "Nine"}, {10, "Ten"},
+    {2, "2"}, {3, "3"}, {4, "4"},
+    {5, "5"}, {6, "6"}, {7, "7"},
+    {8, "8"}, {9, "9"}, {10, "10"},
     {11, "Jack"}, {12, "Queen"},
     {13, "King"}, {1, "Ace"}
 };
