@@ -85,7 +85,7 @@ void DISPLAY::get_cards(){
     std::string msg = inbuffer.rdbuf()->str();
     if(msg != ""){
         try{
-            nlohmann:json j = nlohmann::json::parse(msg);
+            nlohmann::json j = nlohmann::json::parse(msg);
             PLAY play = j[0].get<PLAY>();
             if(play.type == 5){
                 std::vector<Card> cards = play.tradedCards;
@@ -99,7 +99,7 @@ void DISPLAY::get_cards(){
             }
         }
         catch(std::exception& e){
-            std::cerr << "Exception: " e.what() << "\n";
+            std::cerr << "Exception: " << e.what() << "\n";
         }
     }
 }
