@@ -102,6 +102,13 @@ bool DISPLAY::manage(){
                     std::cout << "DEBUG " << msg << " END DEBUG" << std::endl;
                     get_cards(play);
                 }
+                if(play.ID == ""){
+                    user->hide_user_actions();
+                    user->show_init_actions();
+                }
+                else{
+                    user->hide_user_actions();
+                }
             }
             catch(std::exception& e){
                 std::cerr << "Exception: " << e.what() << "\n";

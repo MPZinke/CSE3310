@@ -33,6 +33,12 @@ public:
     // ———————————— DISPLAY FUNCTIONS —————————————
     void hide_user_actions();
     void show_user_actions();
+    
+    void hide_init_actions();
+    void show_init_actions();
+    
+    void hide_sec_actions();
+    void show_sec_actions();
 
     // ———————————— BUTTONS FUNCTIONS ————————————
     void fold();
