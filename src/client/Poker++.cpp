@@ -14,6 +14,8 @@
 #include<thread>
 #include<sstream>
 
+#include <string>
+
 #include"DISPLAY.h"
 #include"GLOBAL.h"
 #include"chat_client.h"
@@ -21,9 +23,9 @@
 
 int main(int argc, char* argv[])
 {
-    if (argc != 3)
+    if (argc != 4)
     {
-        std::cerr << "Usage: " << argv[0] << " <host> <port>\n";
+        std::cerr << "Usage: " << argv[0] << " <host> <port> <id>\n";
         return 1;
     }
     try
@@ -54,7 +56,9 @@ int main(int argc, char* argv[])
                 c.close();
                 });
         guithread = std::thread([&] () -> void { 
-                Glib::RefPtr<Gtk::Application> app = Gtk::Application::create("org.gtkmm.poker");
+                std::string winName = "org.gtkmm.poker";
+                winName.append(argv[3]);
+                Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(winName);
                 DISPLAY main_window(4, inbuffer);
                 app->run(main_window);
             });
