@@ -12,6 +12,7 @@
 ***********************************************************************************************************/
 
 #include"DISPLAY.h"
+#include <queue>
 
 DISPLAY::DISPLAY(int player_number, std::stringstream &inbuffer) :
     _player_number{player_number},
@@ -85,22 +86,30 @@ DISPLAY::~DISPLAY() {
 }
 
 bool DISPLAY::manage(){
-    std::string msg = inbuffer.rdbuf()->str();
-    if(msg != ""){
-        try{
-            nlohmann::json j = nlohmann::json::parse(msg);
-            PLAY play = j[0].get<PLAY>();
-            if(play.type == 5){
-                std::cout << "DEBUG " << msg << " END DEBUG" << std::endl;
-                get_cards(play);
+    std::queue<std::string> commandQueue;
+    std::string line;
+    while(getline(inbuffer, line)){
+        commandQueue.push(line);
+    }
+    while(!commandQueue.empty()){ 
+        std::string msg = commandQueue.front();
+        commandQueue.pop();
+        if(msg != ""){
+            try{
+                nlohmann::json j = nlohmann::json::parse(msg);
+                PLAY play = j[0].get<PLAY>();
+                if(play.type == 5){
+                    std::cout << "DEBUG " << msg << " END DEBUG" << std::endl;
+                    get_cards(play);
+                }
             }
+            catch(std::exception& e){
+                std::cerr << "Exception: " << e.what() << "\n";
+                return false;
+            }
+        }else{
+            return true;
         }
-        catch(std::exception& e){
-            std::cerr << "Exception: " << e.what() << "\n";
-            return false;
-        }
-    }else{
-        return true;
     }
     inbuffer.str("");
     return true;
