@@ -123,12 +123,10 @@ void DISPLAY::get_cards(PLAY play){
     for(int i = 0; i < 5; i++){
         c = cards[i];
         cardNames.push_back(c.toEnglish());
-        std::cout << "DEBUG: Cards - " << cardNames[i] << std::endl;
     }
     
     user->assign_cards(cardNames);
     main_box->show_all();
-    std::cout << "DEBUG: CardNames Assigned" << std::endl;
 }
     
 // new player joined game after display created; create dependencies & add to players array
