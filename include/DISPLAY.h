@@ -32,7 +32,8 @@ public:
     DISPLAY(int player_number, std::stringstream &inbuffer);
     ~DISPLAY();
     
-    void get_cards();
+    bool manage();
+    void get_cards(PLAY play);
 
     void add_cards_to_player(std::vector<std::string> card_names);
     void clear_all_cards_from_player();

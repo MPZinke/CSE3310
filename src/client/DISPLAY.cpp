@@ -15,7 +15,7 @@
 
 DISPLAY::DISPLAY(int player_number, std::stringstream &inbuffer) :
     _player_number{player_number},
-    inbuffer{inbuffer} {
+    inbuffer{inbuffer}{
     main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0));
     add(*main_box);
 
@@ -65,8 +65,14 @@ DISPLAY::DISPLAY(int player_number, std::stringstream &inbuffer) :
     main_box->pack_start(*bottom_row_box);
     user = new USER(_player_number, "YOU", bottom_row_box);
     user->override_color(*COLOR_WHITE);
-
-    get_cards();
+    
+    std::vector<std::string> init = {
+        "Back","Back","Back","Back","Back"
+    };
+    user->assign_cards(init);
+    
+    sigc::slot<bool> output = sigc::mem_fun(*this, &DISPLAY::manage);
+    auto timeout = Glib::signal_timeout().connect(output, 100);
         
     for(int x = 1; x < _player_number; x++) all_players[x]->display_card_backs();
 
@@ -78,29 +84,43 @@ DISPLAY::~DISPLAY() {
     for(int x = 0; x < 6; x++) if(all_players[x]) delete all_players[x];
 }
 
-void DISPLAY::get_cards(){
+bool DISPLAY::manage(){
     std::string msg = inbuffer.rdbuf()->str();
     if(msg != ""){
         try{
             nlohmann::json j = nlohmann::json::parse(msg);
             PLAY play = j[0].get<PLAY>();
             if(play.type == 5){
-                std::vector<Card> cards = play.tradedCards;
-                std::vector<std::string> cardNames;
-                Card c;
-                for(int i = 0; i < 5; i++){
-                    c = cards[i];
-                    cardNames.push_back(c.toEnglish());
-                }
-                user->assign_cards(cardNames);
+                std::cout << "DEBUG " << msg << " END DEBUG" << std::endl;
+                get_cards(play);
             }
         }
         catch(std::exception& e){
             std::cerr << "Exception: " << e.what() << "\n";
+            return false;
         }
+    }else{
+        return true;
     }
+    inbuffer.str("");
+    return true;
 }
 
+void DISPLAY::get_cards(PLAY play){
+    std::vector<Card> cards = play.tradedCards;
+    std::vector<std::string> cardNames;
+    Card c;
+    
+    for(int i = 0; i < 5; i++){
+        c = cards[i];
+        cardNames.push_back(c.toEnglish());
+        std::cout << "DEBUG: Cards - " << cardNames[i] << std::endl;
+    }
+    
+    user->assign_cards(cardNames);
+    std::cout << "DEBUG: CardNames Assigned" << std::endl;
+}
+    
 // new player joined game after display created; create dependencies & add to players array
 void DISPLAY::assign_new_player_to_all_players_array(int player_number, std::string player_name) {
     _total_players++;
