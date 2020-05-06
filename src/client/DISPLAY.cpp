@@ -118,6 +118,7 @@ void DISPLAY::get_cards(PLAY play){
     }
     
     user->assign_cards(cardNames);
+    main_box->show_all();
     std::cout << "DEBUG: CardNames Assigned" << std::endl;
 }
     
