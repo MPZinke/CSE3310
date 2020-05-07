@@ -59,7 +59,7 @@ int main(int argc, char* argv[])
                 std::string winName = "org.gtkmm.poker";
                 winName.append(argv[3]);
                 Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(winName);
-                DISPLAY main_window(4, inbuffer, chat_client);
+                DISPLAY main_window(4, inbuffer, c);
                 app->run(main_window);
             });
         send.join();
