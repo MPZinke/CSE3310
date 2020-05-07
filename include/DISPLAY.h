@@ -41,74 +41,88 @@ typedef std::deque<chat_message> chat_message_queue;
 class DISPLAY: public Gtk::Window {
 public:
    public:
-    DISPLAY(int player_number, asio::io_context& io_context, const tcp::resolver::results_type& endpoints, std::stringstream& inbuffer);
-    ~DISPLAY();
-    
-    void get_cards(PLAY play);
-    void add_money(PLAY play);
-    void set_initial(PLAY play);
+	DISPLAY(int player_number, asio::io_context& io_context, const tcp::resolver::results_type& endpoints, std::stringstream& inbuffer);
+	~DISPLAY();
+	
+	void get_cards(PLAY play);
+	void add_money(PLAY play);
+	void set_initial(PLAY play);
 
 
-    void add_cards_to_player(std::vector<std::string> card_names);
-    void clear_all_cards_from_player();
-    void remove_cards_from_player(std::vector<std::string> card_names);
+	void add_cards_to_player(std::vector<std::string> card_names);
+	void clear_all_cards_from_player();
+	void remove_cards_from_player(std::vector<std::string> card_names);
 
-    // ————————————— OBJECT CREATION —————————————
-    void assign_starting_players_to_all_players_array();
-    void assign_new_player_to_all_players_array(int, std::string);
+	// ————————————— OBJECT CREATION —————————————
+	void assign_starting_players_to_all_players_array();
+	void assign_new_player_to_all_players_array(int, std::string);
 
-    int _player_number;
-    USER* user;
+	int _player_number;
+	USER* user;
 private:
-    int _total_players = 1;  // default to just you
-    PLAYER_DISPLAY* all_players[6] = {};
+	int _total_players = 1;  // default to just you
+	PLAYER_DISPLAY* all_players[6] = {};
 
-    std::thread send;
+	std::thread send;
 
-    Gtk::Box* main_box;
+	Gtk::Box* main_box;
 
-    std::stringstream &inbuffer;
+	std::stringstream &inbuffer;
 
-    // ———————————— OTHER PLAYERS & POT ————————————
+	// ———————————— OTHER PLAYERS & POT ————————————
 
-    // —————— GUI ——————
-    // ———— TOP ROW ————
-    Gtk::Box* top_row_box;
-    // —— CELLS ——
-    Gtk::Box* top_left_box;
-    Gtk::Box* top_center_box;
-    Gtk::Box* top_right_box;
+	// —————— GUI ——————
+	// ———— TOP ROW ————
+	Gtk::Box* top_row_box;
+	// —— CELLS ——
+	Gtk::Box* top_left_box;
+	Gtk::Box* top_center_box;
+	Gtk::Box* top_right_box;
 
-    // ———— MIDDLE ROW ————
-    Gtk::Box* middle_row;
-    // —— CELLS ——
-    Gtk::Box* middle_left_box;
-    Gtk::Box* pot_box;
-    Gtk::Label* pot_label;
-    CHIP_BOX* pot;
-    Gtk::Box* middle_right_box;
+	// ———— MIDDLE ROW ————
+	Gtk::Box* middle_row;
+	// —— CELLS ——
+	Gtk::Box* middle_left_box;
+	Gtk::Box* pot_box;
+	Gtk::Label* pot_label;
+	CHIP_BOX* pot;
+	Gtk::Box* middle_right_box;
 
-    // ———— BOTTOM ROW ————
-    Gtk::Box* bottom_row_box;
+	// ———— BOTTOM ROW ————
+	Gtk::Box* bottom_row_box;
+	// —— BUTTONS FUNCTIONS ——
+	Gtk::Box* _player_actions_box;
+	Gtk::Button* _check_button;//check button
+	Gtk::Button* _bet_button;//bet button
+	Gtk::Button* _fold_button;//fold button
+	Gtk::Button* _out_button;
+	Gtk::Button* _trade_button;//trade button
+	void bet();
+	void check();
+	void fold();
+	void out();
+	void trade();
+	void hide_user_actions();
+
 
  public:
-    // CSE3310 (client) message is sent to the chat server.
-    void write(const chat_message& msg);
-    void close();
+	// CSE3310 (client) message is sent to the chat server.
+	void write(const chat_message& msg);
+	void close();
 
 
 private:
-    void do_connect(const tcp::resolver::results_type& endpoints);
-    void do_read_header();
-    // CSE3310 (client) message body is received from the server
-    void do_read_body();
-    void do_write();
+	void do_connect(const tcp::resolver::results_type& endpoints);
+	void do_read_header();
+	// CSE3310 (client) message body is received from the server
+	void do_read_body();
+	void do_write();
 
 private:
-    asio::io_context& io_context_;
-    tcp::socket socket_;
-    chat_message read_msg_;
-    chat_message_queue write_msgs_;
+	asio::io_context& io_context_;
+	tcp::socket socket_;
+	chat_message read_msg_;
+	chat_message_queue write_msgs_;
 };
 
 #endif
