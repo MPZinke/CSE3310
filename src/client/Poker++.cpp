@@ -30,9 +30,7 @@ int main(int argc, char* argv[])
     }
     try
     {
-        std::thread client;
         std::thread send;
-        std::thread guithread;
 
         std::stringstream inbuffer{};
 
@@ -42,29 +40,13 @@ int main(int argc, char* argv[])
         auto endpoints = resolver.resolve(argv[1], argv[2]);
         chat_client c(io_context, endpoints, inbuffer);
 
-        send = std::thread([&io_context]() {io_context.run();});
-        client = std::thread([&] () -> void {        
-                char line[chat_message::max_body_length + 1];
-                while (std::cin.getline(line, chat_message::max_body_length + 1))
-                {
-                chat_message msg;
-                msg.body_length(std::strlen(line));
-                std::memcpy(msg.body(), line, msg.body_length());
-                msg.encode_header();
-                c.write(msg);
-                }
-                c.close();
-                });
-        guithread = std::thread([&] () -> void { 
-                std::string winName = "org.gtkmm.poker";
-                winName.append(argv[3]);
-                Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(winName);
-                DISPLAY main_window(4, inbuffer, c);
-                app->run(main_window);
-            });
+        send = std::thread([&io_context]() {io_context.run();});  
+        std::string winName = "org.gtkmm.poker";
+        winName.append(argv[3]);
+        Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(winName);
+        DISPLAY main_window(4, inbuffer, c);
+        app->run(main_window);
         send.join();
-        client.join();
-        guithread.join();
     }
     catch (std::exception& e)
     {

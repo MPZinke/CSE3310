@@ -23,13 +23,14 @@
 #include"OTHER_PLAYER.h"
 #include"PLAYER_DISPLAY.h"
 #include"USER.h"
+#include"chat_client.h"
 
 #include "PLAY.h"
 #include <iostream>
 
 class DISPLAY: public Gtk::Window {
 public:
-    DISPLAY(int player_number, std::stringstream &inbuffer, chat_client client);
+    DISPLAY(int player_number, std::stringstream &inbuffer, chat_client &client);
     ~DISPLAY();
     
     bool manage();
