@@ -105,7 +105,7 @@ DISPLAY::DISPLAY(int player_number, asio::io_context& io_context, const tcp::res
 	send = std::thread([&io_context]() {io_context.run();});  
 
 	main_box->show_all();
-	_trade_button->hide();
+	// hide_user_actions();
 }
 
 
@@ -203,24 +203,36 @@ void DISPLAY::do_read_body() {
 			std::string msg = inbuffer.rdbuf()->str();
 			if(msg != ""){
 				try{
-					nlohmann::json j = nlohmann::json::parse(msg);
-					PLAY play = j[0].get<PLAY>();
+					msg = msg.substr(1, msg.size()-3);
 					std::cout << "DEBUG " << msg << " END DEBUG" << std::endl;
-					switch(play.type){
-						case 0: add_money(play);
-						break;
-						case 1:
-						break;
-						case 2:
-						break;
-						case 3: get_cards(play);
-						break;
-						case 4:
-						break;
-						case 5: set_initial(play);
-						break;
+					nlohmann::json j = nlohmann::json::parse(msg);
+					PLAY play = j.get<PLAY>();
+					if(play.type == BET)
+					{
+						// add_money(play);
+						_bet_button->show();
+						_check_button->show();
+						_fold_button->show();
+						_out_button->show();
+						std::cout << "Played bet\n";
 					}
-					main_box->show_all();
+					else if(play.type == TRADE)
+					{
+						get_cards(play);
+						_trade_button->show();
+						_check_button->show();
+						_fold_button->show();
+						_out_button->show();
+					}
+					else if(play.type == OUT)
+					{
+						// quit game
+					}
+					else if(play.type == MATCHSTART)
+					{
+						set_initial(play);
+					}
+					// main_box->show_all();
 				}
 				catch(std::exception& e){
 					std::cerr << "Exception: " << e.what() << "\n";
@@ -281,8 +293,11 @@ void DISPLAY::bet()
 
 void DISPLAY::check()
 {
-	auto message = nlohmann::json{PLAY(CHECK, 0)};
+	PLAY play(CHECK, 0);
+	auto message = nlohmann::json{play};
+	std::cout << "Writing message...";
 	write(chat_message{message});
+	std::cout << "DONE\n";
 	hide_user_actions();
 }
 

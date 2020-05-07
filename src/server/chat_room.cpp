@@ -45,7 +45,7 @@ void chat_room::leave(chat_participant_ptr participant) {
 
 //Deliver a message to everyone in the chatroom
 void chat_room::deliver(const chat_message& msg) {
-    game.processInput(msg);
+    // game.processInput(msg);
     
     recent_msgs_.push_back(msg);
     while (recent_msgs_.size() > max_recent_msgs)
@@ -62,6 +62,6 @@ void chat_room::deliver(const chat_message& msg) {
 // message received; validate message and send to game to process
 void chat_room::message_received(const chat_message& message)
 {
-    if(!game.has_started()) ;  // handle premature message
+    if(!game.has_started()) return;  // handle premature message
     game.processInput(message);
 }

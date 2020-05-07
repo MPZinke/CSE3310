@@ -1,5 +1,6 @@
 #include "ROUND.h"
 
+#include<iostream>  //TESTING
 
 ROUND::ROUND(int round_number, std::vector<PLAYER*>* remaining_players, MessageQueue* queue_ptr)
     : _round_number{round_number}, _remaining_players{remaining_players}, message_queue{queue_ptr}
@@ -17,7 +18,11 @@ ROUND::ROUND(int round_number, std::vector<PLAYER*>* remaining_players, MessageQ
 void ROUND::process_play(nlohmann::json playJson){
 	PLAY play = playJson.get<PLAY>();
 	PLAYER* current_player = (*_remaining_players)[_current_player];
-	if(current_player->id() != play.ID) return;
+	// if(current_player->id() != play.ID)  //TODO: fix
+	// {
+	// 	std::cout << "Out of order player\n";
+	// 	return;
+	// }
 
 	if(play.type == OUT) remove_current_player();
 	else if(play.type == FOLD) _player_folds[_current_player] = true;
@@ -42,12 +47,17 @@ void ROUND::process_play(nlohmann::json playJson){
 		}
 	}
 
+	std::cout << "Player: " << play.type << std::endl;  //TESTING
+
 	_current_player++;
 	if((unsigned int)_current_player == _remaining_players->size())
 	{
 		_current_player = 0;
 		_round_phase++;
+		int required_bet = 0;  //TODO: bet amount
+		add_message_to_queue(_current_player, PLAY{(PLAYTYPE)(_round_phase%2), required_bet});
 	}
+	std::cout << "Next player: " << _current_player << "\tNext round: " << _round_number << std::endl;  //TESTING
 	if(is_finished()) finish_round();
 }
 

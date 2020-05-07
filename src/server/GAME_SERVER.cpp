@@ -16,10 +16,11 @@ GAME_SERVER::GAME_SERVER()
 void GAME_SERVER::addPlayer(chat_participant_ptr player, chat_message msg) {
 	nlohmann::json msgjson = msg.getJson();
 
+	if(participants.size() == 4 || has_started()) return;
 	participants.push_back(player);
 	std::string name = "", id="";
 	players.push_back(new PLAYER{});
-	if(players.size() == 4) start_game();
+	if(players.size() == 1) start_game();  //TESTING
 }
 
 
@@ -51,9 +52,12 @@ void GAME_SERVER::processInput(chat_message msg) {
 	{
 		std::stringstream str;
 		str.write(msg.body(), msg.body_length());
-		nlohmann::json j{str.str()};
+		std::string json_string = str.str();
+		json_string = json_string.substr(1, json_string.size()-2);
+		nlohmann::json j = nlohmann::json::parse(json_string);
+		std::cout << j << std::endl;
 
-		currentRound->process_play(PLAY{j});
+		currentRound->process_play(j);
 		send_queued_messages();
 		if(currentRound->is_finished()) start_new_round();
 	}
