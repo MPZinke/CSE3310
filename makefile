@@ -1,6 +1,6 @@
-CXX=g++
+CXX=clang++
 CXXFLAGS=-std=c++11 -Wall -I include/
-LDLIBS=`/usr/bin/pkg-config gtkmm-3.0 --cflags --libs`
+LDLIBS=-L/usr/lib64 -lstdc++ `/usr/bin/pkg-config gtkmm-3.0 --cflags --libs`
 SRC_DIR=./src
 OBJ_DIR=./obj
 CLIENT_DIR=./src/client

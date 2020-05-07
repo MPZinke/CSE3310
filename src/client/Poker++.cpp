@@ -13,12 +13,10 @@
 #include<iostream>
 #include<thread>
 #include<sstream>
-
 #include <string>
 
 #include"DISPLAY.h"
 #include"GLOBAL.h"
-#include"chat_client.h"
 #include"asio.hpp"
 
 int main(int argc, char* argv[])
@@ -38,13 +36,11 @@ int main(int argc, char* argv[])
 
         tcp::resolver resolver(io_context);
         auto endpoints = resolver.resolve(argv[1], argv[2]);
-        chat_client c(io_context, endpoints, inbuffer);
 
-        send = std::thread([&io_context]() {io_context.run();});  
         std::string winName = "org.gtkmm.poker";
         winName.append(argv[3]);
         Glib::RefPtr<Gtk::Application> app = Gtk::Application::create(winName);
-        DISPLAY main_window(4, inbuffer, c);
+        DISPLAY main_window(4, io_context, endpoints, inbuffer);
         app->run(main_window);
         send.join();
     }

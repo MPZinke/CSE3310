@@ -15,26 +15,39 @@
 #ifndef _CLIENT_GUI_DISPLAY_
 #define _CLIENT_GUI_DISPLAY_
 
-#include<gtkmm.h>
-
-#include"CARDDISPLAY.h"
-#include"CHIP_BOX.h"
-#include"GLOBAL.h"
-#include"OTHER_PLAYER.h"
-#include"PLAYER_DISPLAY.h"
-#include"USER.h"
-#include"chat_client.h"
-
-#include "PLAY.h"
+#include <cstdlib>
+#include <deque>
 #include <iostream>
+#include<gtkmm.h>
+#include <thread>
+
+
+#include "USER.h"
+#include "OTHER_PLAYER.h"
+#include "CARDDISPLAY.h"
+#include "CHIP_BOX.h"
+#include "GLOBAL.h"
+#include "PLAYER_DISPLAY.h"
+#include "asio.hpp"
+#include "chat_message.hpp"
+#include "json.hpp"
+#include "PLAY.h"
+
+using asio::ip::tcp;
+
+typedef std::deque<chat_message> chat_message_queue;
+
 
 class DISPLAY: public Gtk::Window {
 public:
-    DISPLAY(int player_number, std::stringstream &inbuffer, chat_client &client);
+   public:
+    DISPLAY(int player_number, asio::io_context& io_context, const tcp::resolver::results_type& endpoints, std::stringstream& inbuffer);
     ~DISPLAY();
     
-    bool manage();
     void get_cards(PLAY play);
+    void add_money(PLAY play);
+    void set_initial(PLAY play);
+
 
     void add_cards_to_player(std::vector<std::string> card_names);
     void clear_all_cards_from_player();
@@ -44,16 +57,17 @@ public:
     void assign_starting_players_to_all_players_array();
     void assign_new_player_to_all_players_array(int, std::string);
 
-    const int _player_number;
+    int _player_number;
     USER* user;
 private:
     int _total_players = 1;  // default to just you
     PLAYER_DISPLAY* all_players[6] = {};
 
+    std::thread send;
+
     Gtk::Box* main_box;
 
     std::stringstream &inbuffer;
-    chat_client &client;
 
     // ———————————— OTHER PLAYERS & POT ————————————
 
@@ -76,6 +90,25 @@ private:
 
     // ———— BOTTOM ROW ————
     Gtk::Box* bottom_row_box;
+
+ public:
+    // CSE3310 (client) message is sent to the chat server.
+    void write(const chat_message& msg);
+    void close();
+
+
+private:
+    void do_connect(const tcp::resolver::results_type& endpoints);
+    void do_read_header();
+    // CSE3310 (client) message body is received from the server
+    void do_read_body();
+    void do_write();
+
+private:
+    asio::io_context& io_context_;
+    tcp::socket socket_;
+    chat_message read_msg_;
+    chat_message_queue write_msgs_;
 };
 
 #endif

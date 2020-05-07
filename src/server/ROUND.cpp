@@ -6,8 +6,10 @@ ROUND::ROUND(int round_number, std::vector<PLAYER*>* remaining_players, MessageQ
 {
     _deck = DECK();
     _deck.shuffle();
-    for(unsigned int x = 0; x < _remaining_players->size(); x++) 
-        (*_remaining_players)[x]->setHand(_deck.draw_card(5));
+    for(unsigned int x = 0; x < _remaining_players->size(); x++) {
+		(*_remaining_players)[x]->setHand(_deck.draw_card(5));
+		(*_remaining_players)[x]->current_hand().sort();
+	}
 }
 
 // ——————————————— GAME COMMUNICATION ———————————————

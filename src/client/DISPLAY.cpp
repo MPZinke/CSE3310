@@ -14,10 +14,13 @@
 #include"DISPLAY.h"
 #include <queue>
 
-DISPLAY::DISPLAY(int player_number, std::stringstream &inbuffer, chat_client &client) :
+DISPLAY::DISPLAY(int player_number, asio::io_context& io_context, const tcp::resolver::results_type& endpoints, std::stringstream& inbuffer) : 
     _player_number{player_number},
     inbuffer{inbuffer},
-    client{client} {
+    io_context_(io_context),
+    socket_(io_context) {
+    
+    do_connect(endpoints);
     main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0));
     add(*main_box);
 
@@ -72,11 +75,11 @@ DISPLAY::DISPLAY(int player_number, std::stringstream &inbuffer, chat_client &cl
         "Back","Back","Back","Back","Back"
     };
     user->assign_cards(init);
-    
-    sigc::slot<bool> output = sigc::mem_fun(*this, &DISPLAY::manage);
-    auto timeout = Glib::signal_timeout().connect(output, 100);
         
     for(int x = 1; x < _player_number; x++) all_players[x]->display_card_backs();
+
+
+    send = std::thread([&io_context]() {io_context.run();});  
 
     main_box->show_all();
 }
@@ -85,58 +88,7 @@ DISPLAY::DISPLAY(int player_number, std::stringstream &inbuffer, chat_client &cl
 DISPLAY::~DISPLAY() {
     for(int x = 0; x < 6; x++) if(all_players[x]) delete all_players[x];
 }
-
-bool DISPLAY::manage(){
-    std::queue<std::string> commandQueue;
-    std::string line;
-    while(getline(inbuffer, line)){
-        commandQueue.push(line);
-    }
-    while(!commandQueue.empty()){ 
-        std::string msg = commandQueue.front();
-        commandQueue.pop();
-        if(msg != ""){
-            try{
-                nlohmann::json j = nlohmann::json::parse(msg);
-                PLAY play = j[0].get<PLAY>();
-                if(play.type == 5){
-                    std::cout << "DEBUG " << msg << " END DEBUG" << std::endl;
-                    get_cards(play);
-                }
-                if(play.ID == ""){
-                    user->hide_user_actions();
-                    user->show_init_actions();
-                }
-                else{
-                    user->hide_user_actions();
-                }
-            }
-            catch(std::exception& e){
-                std::cerr << "Exception: " << e.what() << "\n";
-                return false;
-            }
-        }else{
-            return true;
-        }
-    }
-    inbuffer.str("");
-    return true;
-}
-
-void DISPLAY::get_cards(PLAY play){
-    std::vector<Card> cards = play.tradedCards;
-    std::vector<std::string> cardNames;
-    Card c;
-    
-    for(int i = 0; i < 5; i++){
-        c = cards[i];
-        cardNames.push_back(c.toEnglish());
-    }
-    
-    user->assign_cards(cardNames);
-    main_box->show_all();
-}
-    
+   
 // new player joined game after display created; create dependencies & add to players array
 void DISPLAY::assign_new_player_to_all_players_array(int player_number, std::string player_name) {
     _total_players++;
@@ -173,4 +125,125 @@ void DISPLAY::assign_starting_players_to_all_players_array() {
     all_players[_player_number] = NULL;  // constant so NULL put in for good measure
 
     // create Labels for empty spaces
+}
+
+// CSE3310 (client) message is sent to the chat server.
+void DISPLAY::write(const chat_message& msg) {
+    asio::post(io_context_,
+    [this, msg]() {
+        bool write_in_progress = !write_msgs_.empty();
+        write_msgs_.push_back(msg);
+        if (!write_in_progress) {
+            do_write();
+        }
+    });
+}
+
+void DISPLAY::close() {
+    asio::post(io_context_, [this]() {
+        socket_.close();
+    });
+}
+
+void DISPLAY::do_connect(const tcp::resolver::results_type& endpoints) {
+    // CSE3310 (client) connection is established with the server
+    asio::async_connect(socket_, endpoints,
+    [this](std::error_code ec, tcp::endpoint) {
+        if (!ec) {
+            do_read_header();
+        }
+    });
+}
+
+void DISPLAY::do_read_header() {
+    asio::async_read(socket_,
+                     asio::buffer(read_msg_.data(), chat_message::header_length),
+    [this](std::error_code ec, std::size_t /*length*/) {
+        if (!ec && read_msg_.decode_header()) {
+            do_read_body();
+        } else {
+            socket_.close();
+        }
+    });
+}
+
+// CSE3310 (client) message body is received from the server
+void DISPLAY::do_read_body() {
+    asio::async_read(socket_,
+                     asio::buffer(read_msg_.body(), read_msg_.body_length()),
+    [this](std::error_code ec, std::size_t /*length*/) {
+        if (!ec) {
+            inbuffer.write(read_msg_.body(), read_msg_.body_length());
+            inbuffer << "\n";
+            std::vector<std::string> commandQueue;
+            std::string msg = inbuffer.rdbuf()->str();
+            if(msg != ""){
+                try{
+                    nlohmann::json j = nlohmann::json::parse(msg);
+                    PLAY play = j[0].get<PLAY>();
+                    std::cout << "DEBUG " << msg << " END DEBUG" << std::endl;
+                    switch(play.type){
+                        case 0: add_money(play);
+                        break;
+                        case 1:
+                        break;
+                        case 2:
+                        break;
+                        case 3: get_cards(play);
+                        break;
+                        case 4:
+                        break;
+                        case 5: set_initial(play);
+                        break;
+                    }
+                    main_box->show_all();
+                }
+                catch(std::exception& e){
+                    std::cerr << "Exception: " << e.what() << "\n";
+                }
+            }
+            inbuffer.str("");
+            do_read_header();
+        } else {
+            socket_.close();
+        }
+    });
+}
+
+void DISPLAY::get_cards(PLAY play){
+    std::vector<Card> cards = play.tradedCards;
+    std::vector<std::string> cardNames;
+    Card c;
+    
+    for(int i = 0; i < 5; i++){
+        c = cards[i];
+        cardNames.push_back(c.toEnglish());
+    }
+    
+    user->assign_cards(cardNames);
+}
+
+void DISPLAY::add_money(PLAY play){
+    user->change_chip_amount(abs(play.bet));
+}
+
+void DISPLAY::set_initial(PLAY play){
+    _player_number = stoi(play.ID);
+    get_cards(play);
+}
+
+void DISPLAY::do_write() {
+    asio::async_write(socket_,
+                      asio::buffer(write_msgs_.front().data(),
+                                   write_msgs_.front().length()),
+    [this](std::error_code ec, std::size_t /*length*/) {
+        if (!ec) {
+            write_msgs_.pop_front();
+            if (!write_msgs_.empty()) {
+                do_write();
+            }
+        } else {
+            socket_.close();
+        }
+    });
 }

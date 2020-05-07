@@ -38,8 +38,11 @@ void GAME_SERVER::start_game()
 		std::cout << chat_message{temp}.body() << std::endl; 
 	}
 	// send first person bet message
-	auto temp = nlohmann::json{PLAY{}};
-	participants[0]->deliver(chat_message{temp});
+	auto temp = PLAY{};
+	temp.ID = players[0]->id();
+	temp.bet = 500;
+	auto tempJ = nlohmann::json{PLAY{}};
+	participants[0]->deliver(chat_message{tempJ});
 }
 
 
@@ -89,7 +92,7 @@ void GAME_SERVER::leave(chat_participant_ptr participant){
     int i;
     bool flag = false;
     for(i = 0; i < (int) participants.size(); i++){
-        if(flag |= participants[i] == participant)
+        if((flag |= (participants[i] == participant)))
             break;
     }
     if(flag){

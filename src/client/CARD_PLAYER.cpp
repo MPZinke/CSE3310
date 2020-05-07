@@ -56,7 +56,7 @@ void CARD_PLAYER::remove_all_cards() {
 
 
 void CARD_PLAYER::change_chip_amount(int amount) {
-    // _chip_box->change_chips(amount);
+    _chip_box->change_chip_amount(amount);
 }
 
 
