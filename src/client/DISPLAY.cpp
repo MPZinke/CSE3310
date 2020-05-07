@@ -14,9 +14,10 @@
 #include"DISPLAY.h"
 #include <queue>
 
-DISPLAY::DISPLAY(int player_number, std::stringstream &inbuffer) :
+DISPLAY::DISPLAY(int player_number, std::stringstream &inbuffer, chat_client &client) :
     _player_number{player_number},
-    inbuffer{inbuffer}{
+    inbuffer{inbuffer},
+    client{client} {
     main_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0));
     add(*main_box);
 

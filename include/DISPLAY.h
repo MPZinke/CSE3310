@@ -29,7 +29,7 @@
 
 class DISPLAY: public Gtk::Window {
 public:
-    DISPLAY(int player_number, std::stringstream &inbuffer);
+    DISPLAY(int player_number, std::stringstream &inbuffer, chat_client client);
     ~DISPLAY();
     
     bool manage();
@@ -52,6 +52,7 @@ private:
     Gtk::Box* main_box;
 
     std::stringstream &inbuffer;
+    chat_client &client;
 
     // ———————————— OTHER PLAYERS & POT ————————————
 
