@@ -199,11 +199,10 @@ void DISPLAY::do_read_body() {
 		if (!ec) {
 			inbuffer.write(read_msg_.body(), read_msg_.body_length());
 			inbuffer << "\n";
-			std::vector<std::string> commandQueue;
 			std::string msg = inbuffer.rdbuf()->str();
 			if(msg != ""){
 				try{
-					msg = msg.substr(1, msg.size()-3);
+					msg = msg.substr(1, msg.find_last_of('}'));
 					std::cout << "DEBUG " << msg << " END DEBUG" << std::endl;
 					nlohmann::json j = nlohmann::json::parse(msg);
 					PLAY play = j.get<PLAY>();
@@ -255,8 +254,10 @@ void DISPLAY::get_cards(PLAY play){
 		c = cards[i];
 		cardNames.push_back(c.toEnglish());
 	}
-	
+
+    hide_user_actions();
 	user->assign_cards(cardNames);
+    user->show_all();
 }
 
 void DISPLAY::add_money(PLAY play){
@@ -284,6 +285,14 @@ void DISPLAY::do_write() {
 	});
 }
 
+void DISPLAY::send_to_server(PLAY play){
+	auto message = nlohmann::json{play};
+	std::cout << "Writing message...";
+	write(chat_message{message});
+	std::cout << "DONE\n";
+	hide_user_actions();
+}
+
 
 void DISPLAY::bet()
 {
@@ -294,11 +303,9 @@ void DISPLAY::bet()
 void DISPLAY::check()
 {
 	PLAY play(CHECK, 0);
+    play.ID = std::to_string(_player_number);
 	auto message = nlohmann::json{play};
-	std::cout << "Writing message...";
-	write(chat_message{message});
-	std::cout << "DONE\n";
-	hide_user_actions();
+    send_to_server(play);
 }
 
 
@@ -307,10 +314,12 @@ void DISPLAY::fold()
 
 }
 
-
+//Quit game
 void DISPLAY::out()
 {
-	// quit game
+	PLAY play(OUT, 0);
+    play.ID = std::to_string(_player_number);
+    send_to_server(play);
 }
 
 

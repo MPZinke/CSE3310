@@ -2,6 +2,7 @@
 #include "json.hpp"
 
 PLAY::PLAY(): PLAY(BET, 0) {}
+PLAY::PLAY(PLAYTYPE type): type{type} {}
 PLAY::PLAY(PLAYTYPE type, HAND hand): type{type}, currenthand{hand} {}
 PLAY::PLAY(PLAYTYPE type, int bet): type{type}, bet{bet} {}
 

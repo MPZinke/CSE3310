@@ -19,7 +19,7 @@ class GAME_SERVER {
 	public:
 		GAME_SERVER();
 		
-		void addPlayer(chat_participant_ptr player, chat_message msg); 
+		void addPlayer(chat_participant_ptr player); 
 		void start_game();
         void leave(chat_participant_ptr participant);
 		void processInput(chat_message msg);

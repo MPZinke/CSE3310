@@ -31,7 +31,7 @@ using asio::ip::tcp;
 //Add participant to chat_room and send them all of the messages sent so far
 void chat_room::join(chat_participant_ptr participant) {
     participants_.insert(participant);
-    game.addPlayer(participant, chat_message{nlohmann::json{{"name", ""}, {"id", ""}}});
+    game.addPlayer(participant);
     // CSE3310 (server)  previous chat messages are sent to a client
     for (auto msg: recent_msgs_)
         participant->deliver(msg);
@@ -45,8 +45,6 @@ void chat_room::leave(chat_participant_ptr participant) {
 
 //Deliver a message to everyone in the chatroom
 void chat_room::deliver(const chat_message& msg) {
-    // game.processInput(msg);
-    
     recent_msgs_.push_back(msg);
     while (recent_msgs_.size() > max_recent_msgs)
         recent_msgs_.pop_front();

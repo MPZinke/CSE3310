@@ -103,6 +103,7 @@ private:
 	void out();
 	void trade();
 	void hide_user_actions();
+    void send_to_server(PLAY play);
 
 
  public:
