@@ -62,6 +62,8 @@ void CHIP_BOX::change_chip_amount(int amount) {
     _white_chip->change_chip_count(white_chip_amount);
     _red_chip->change_chip_count(red_chip_amount);
     _blue_chip->change_chip_count(blue_chip_amount);
+
+    this->show_all();
 }
 
 

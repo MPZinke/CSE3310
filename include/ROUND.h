@@ -13,7 +13,7 @@ typedef std::vector<std::map<int, chat_message>> MessageQueue;
 
 class ROUND {
 public:
-	ROUND(int, std::vector<PLAYER*>*, MessageQueue*);
+	ROUND(int, std::vector<PLAYER*>&, MessageQueue*);
 
 	Card draw_card();
 	std::vector<Card> draw_card(int);
@@ -23,6 +23,7 @@ public:
 	void process_play(nlohmann::json play);
 
 	int round_number();
+    int current_player();
 	bool is_finished();
 	bool all_other_players_have_folded();
 	int highest_bet();
@@ -36,7 +37,7 @@ public:
 private:
 	int _round_number;
 	int _round_phase = 0;  // whether the round is betting or trading (even bet; odd trade) 5 = end
-	std::vector<PLAYER*>* _remaining_players;
+	std::vector<PLAYER*> &_remaining_players;
 	MessageQueue* message_queue;
 	DECK _deck;
 
