@@ -31,12 +31,12 @@ public:
     // ———————————— GETTER FUNCTIONS —————————————
     void change_chip_amount(int);
     int chip_amount();
+    Gtk::Box* _cards_and_chip_box;
+    Gtk::Box* _card_box;
 
 protected:
     void remove_all_cards();
 
-    Gtk::Box* _cards_and_chip_box;
-    Gtk::Box* _card_box;
     CARDDISPLAY* _cards[5] = {NULL};
 
     CHIP_BOX* _chip_box;

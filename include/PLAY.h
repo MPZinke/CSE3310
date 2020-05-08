@@ -19,6 +19,7 @@ enum PLAYTYPE {
 class PLAY{
     public:
         PLAY();
+        PLAY(PLAYTYPE type);
         PLAY(PLAYTYPE type, HAND play);
         PLAY(PLAYTYPE type, int bet);
 
