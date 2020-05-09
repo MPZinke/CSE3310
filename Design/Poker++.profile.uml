@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Profile name="untitled_profile" xmi:id="5wUF746D.AACAQBO_profile" xmi:version="2.1" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:uml="http://www.eclipse.org/uml2/2.0.0/UML" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1">
+	<packageImport xmi:id="5wUF746D.AACAQBO_profile_UMLMetaModel">
+		<importedPackage href="pathmap://UML_METAMODELS/UML.metamodel.uml#_0" xmi:type="uml:Model"/>
+	</packageImport>
+	<eAnnotations source="http://www.eclipse.org/uml2/2.0.0/UML" xmi:id="5wUF746D.AACAQBO_profile_definition">
+		<contents name="untitled_profile" nsPrefix="untitled_profile" nsURI="http:///schemas/untitled_profile/0" xmi:id="5wUF746D.AACAQBO_content" xmi:type="ecore:EPackage">
+			<eClassifiers name="enumeration" xmi:id="mGaF746D.AACAQWP_classifier" xmi:type="ecore:EClass">
+				<eAnnotations references="mGaF746D.AACAQWP" source="http://www.eclipse.org/uml2/2.0.0/UML" xmi:id="mGaF746D.AACAQWP_annotation"/>
+				<eStructuralFeatures lowerBound="1" name="base_Class" ordered="false" xmi:id="mGaF746D.AACAQWP_structuralFeature" xmi:type="ecore:EReference">
+					<eType href="http://www.eclipse.org/uml2/2.0.0/UML#//Class" xmi:type="ecore:EClass"/>
+				</eStructuralFeatures>
+			</eClassifiers>
+			<eClassifiers name="struct" xmi:id="amaF746D.AACAQXD_classifier" xmi:type="ecore:EClass">
+				<eAnnotations references="amaF746D.AACAQXD" source="http://www.eclipse.org/uml2/2.0.0/UML" xmi:id="amaF746D.AACAQXD_annotation"/>
+				<eStructuralFeatures lowerBound="1" name="base_Class" ordered="false" xmi:id="amaF746D.AACAQXD_structuralFeature" xmi:type="ecore:EReference">
+					<eType href="http://www.eclipse.org/uml2/2.0.0/UML#//Class" xmi:type="ecore:EClass"/>
+				</eStructuralFeatures>
+			</eClassifiers>
+			<eClassifiers name="Typedef" xmi:id="CWaF746D.AACAQZN_classifier" xmi:type="ecore:EClass">
+				<eAnnotations references="CWaF746D.AACAQZN" source="http://www.eclipse.org/uml2/2.0.0/UML" xmi:id="CWaF746D.AACAQZN_annotation"/>
+				<eStructuralFeatures lowerBound="1" name="base_Class" ordered="false" xmi:id="CWaF746D.AACAQZN_structuralFeature" xmi:type="ecore:EReference">
+					<eType href="http://www.eclipse.org/uml2/2.0.0/UML#//Class" xmi:type="ecore:EClass"/>
+				</eStructuralFeatures>
+			</eClassifiers>
+			<eClassifiers name="union" xmi:id="91aF746D.AACARhq_classifier" xmi:type="ecore:EClass">
+				<eAnnotations references="91aF746D.AACARhq" source="http://www.eclipse.org/uml2/2.0.0/UML" xmi:id="91aF746D.AACARhq_annotation"/>
+				<eStructuralFeatures lowerBound="1" name="base_Class" ordered="false" xmi:id="91aF746D.AACARhq_structuralFeature" xmi:type="ecore:EReference">
+					<eType href="http://www.eclipse.org/uml2/2.0.0/UML#//Class" xmi:type="ecore:EClass"/>
+				</eStructuralFeatures>
+			</eClassifiers>
+			<eClassifiers name="friend" xmi:id="NS6F746D.AACATv6_classifier" xmi:type="ecore:EClass">
+				<eAnnotations references="NS6F746D.AACATv6" source="http://www.eclipse.org/uml2/2.0.0/UML" xmi:id="NS6F746D.AACATv6_annotation"/>
+				<eStructuralFeatures lowerBound="1" name="base_Dependency" ordered="false" xmi:id="NS6F746D.AACATv6_structuralFeature" xmi:type="ecore:EReference">
+					<eType href="http://www.eclipse.org/uml2/2.0.0/UML#//Dependency" xmi:type="ecore:EClass"/>
+				</eStructuralFeatures>
+			</eClassifiers>
+			<eClassifiers name="enumeration" xmi:id="mGaF746D.AACAQWP_classifier" xmi:type="ecore:EClass">
+				<eAnnotations references="mGaF746D.AACAQWP" source="http://www.eclipse.org/uml2/2.0.0/UML" xmi:id="mGaF746D.AACAQWP_annotation"/>
+				<eStructuralFeatures lowerBound="1" name="base_Enumeration" ordered="false" xmi:id="mGaF746D.AACAQWP_structuralFeature" xmi:type="ecore:EReference">
+					<eType href="http://www.eclipse.org/uml2/2.0.0/UML#//Enumeration" xmi:type="ecore:EClass"/>
+				</eStructuralFeatures>
+			</eClassifiers>
+		</contents>
+	</eAnnotations>
+	<packagedElement name="enumeration" xmi:id="mGaF746D.AACAQWP" xmi:type="uml:Stereotype">
+		<ownedAttribute association="mGaF746D.AACAQWP_extension" name="base_Class" xmi:id="mGaF746D.AACAQWP_to">
+			<type href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class" xmi:type="uml:Class"/>
+		</ownedAttribute>
+	</packagedElement>
+	<packagedElement memberEnd="mGaF746D.AACAQWP_from mGaF746D.AACAQWP_to" name="Class_enumeration" xmi:id="mGaF746D.AACAQWP_extension" xmi:type="uml:Extension">
+		<ownedEnd aggregation="composite" association="mGaF746D.AACAQWP_extension" type="mGaF746D.AACAQWP" xmi:id="mGaF746D.AACAQWP_from" xmi:type="uml:ExtensionEnd"/>
+	</packagedElement>
+	<packagedElement name="struct" xmi:id="amaF746D.AACAQXD" xmi:type="uml:Stereotype">
+		<ownedAttribute association="amaF746D.AACAQXD_extension" name="base_Class" xmi:id="amaF746D.AACAQXD_to">
+			<type href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class" xmi:type="uml:Class"/>
+		</ownedAttribute>
+	</packagedElement>
+	<packagedElement memberEnd="amaF746D.AACAQXD_from amaF746D.AACAQXD_to" name="Class_struct" xmi:id="amaF746D.AACAQXD_extension" xmi:type="uml:Extension">
+		<ownedEnd aggregation="composite" association="amaF746D.AACAQXD_extension" type="amaF746D.AACAQXD" xmi:id="amaF746D.AACAQXD_from" xmi:type="uml:ExtensionEnd"/>
+	</packagedElement>
+	<packagedElement name="Typedef" xmi:id="CWaF746D.AACAQZN" xmi:type="uml:Stereotype">
+		<ownedAttribute association="CWaF746D.AACAQZN_extension" name="base_Class" xmi:id="CWaF746D.AACAQZN_to">
+			<type href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class" xmi:type="uml:Class"/>
+		</ownedAttribute>
+	</packagedElement>
+	<packagedElement memberEnd="CWaF746D.AACAQZN_from CWaF746D.AACAQZN_to" name="Class_Typedef" xmi:id="CWaF746D.AACAQZN_extension" xmi:type="uml:Extension">
+		<ownedEnd aggregation="composite" association="CWaF746D.AACAQZN_extension" type="CWaF746D.AACAQZN" xmi:id="CWaF746D.AACAQZN_from" xmi:type="uml:ExtensionEnd"/>
+	</packagedElement>
+	<packagedElement name="union" xmi:id="91aF746D.AACARhq" xmi:type="uml:Stereotype">
+		<ownedAttribute association="91aF746D.AACARhq_extension" name="base_Class" xmi:id="91aF746D.AACARhq_to">
+			<type href="pathmap://UML_METAMODELS/UML.metamodel.uml#Class" xmi:type="uml:Class"/>
+		</ownedAttribute>
+	</packagedElement>
+	<packagedElement memberEnd="91aF746D.AACARhq_from 91aF746D.AACARhq_to" name="Class_union" xmi:id="91aF746D.AACARhq_extension" xmi:type="uml:Extension">
+		<ownedEnd aggregation="composite" association="91aF746D.AACARhq_extension" type="91aF746D.AACARhq" xmi:id="91aF746D.AACARhq_from" xmi:type="uml:ExtensionEnd"/>
+	</packagedElement>
+	<packagedElement name="friend" xmi:id="NS6F746D.AACATv6" xmi:type="uml:Stereotype">
+		<ownedAttribute association="NS6F746D.AACATv6_extension" name="base_Dependency" xmi:id="NS6F746D.AACATv6_to">
+			<type href="pathmap://UML_METAMODELS/UML.metamodel.uml#Dependency" xmi:type="uml:Class"/>
+		</ownedAttribute>
+	</packagedElement>
+	<packagedElement memberEnd="NS6F746D.AACATv6_from NS6F746D.AACATv6_to" name="Dependency_friend" xmi:id="NS6F746D.AACATv6_extension" xmi:type="uml:Extension">
+		<ownedEnd aggregation="composite" association="NS6F746D.AACATv6_extension" type="NS6F746D.AACATv6" xmi:id="NS6F746D.AACATv6_from" xmi:type="uml:ExtensionEnd"/>
+	</packagedElement>
+	<packagedElement name="enumeration" xmi:id="mGaF746D.AACAQWP" xmi:type="uml:Stereotype">
+		<ownedAttribute association="mGaF746D.AACAQWP_extension" name="base_Enumeration" xmi:id="mGaF746D.AACAQWP_to">
+			<type href="pathmap://UML_METAMODELS/UML.metamodel.uml#Enumeration" xmi:type="uml:Class"/>
+		</ownedAttribute>
+	</packagedElement>
+	<packagedElement memberEnd="mGaF746D.AACAQWP_from mGaF746D.AACAQWP_to" name="Class_enumeration" xmi:id="mGaF746D.AACAQWP_extension" xmi:type="uml:Extension">
+		<ownedEnd aggregation="composite" association="mGaF746D.AACAQWP_extension" type="mGaF746D.AACAQWP" xmi:id="mGaF746D.AACAQWP_from" xmi:type="uml:ExtensionEnd"/>
+	</packagedElement>
+</uml:Profile>
