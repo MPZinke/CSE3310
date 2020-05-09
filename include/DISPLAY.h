@@ -97,6 +97,18 @@ private:
 	Gtk::Button* _fold_button;//fold button
 	Gtk::Button* _out_button;
 	Gtk::Button* _trade_button;//trade button
+
+	Gtk::Box* card_select_box;
+	Gtk::Button* select_card_button1;
+	Gtk::Button* select_card_button2;
+	Gtk::Button* select_card_button3;
+	Gtk::Button* select_card_button4;
+	Gtk::Button* select_card_button5;
+	
+	Gtk::Entry* bet_amount;
+
+	void select_card(int);
+
 	void bet();
 	void check();
 	void fold();
@@ -104,6 +116,8 @@ private:
 	void trade();
 	void hide_user_actions();
     void send_to_server(PLAY play);
+
+    bool card_selected[5] = {false, false, false, false, false};
 
 
  public:

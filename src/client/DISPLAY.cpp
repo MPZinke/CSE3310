@@ -66,7 +66,7 @@ DISPLAY::DISPLAY(int player_number, asio::io_context& io_context, const tcp::res
 
 	// ———————————————— PLAYER ————————————————
 	// ———— BOTTOM ROW ————
-	bottom_row_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL, 0));
+	bottom_row_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 0));
 	main_box->pack_start(*bottom_row_box);
 
 	_player_actions_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_VERTICAL));
@@ -95,6 +95,31 @@ DISPLAY::DISPLAY(int player_number, asio::io_context& io_context, const tcp::res
 	_out_button->signal_clicked().connect(sigc::mem_fun(*this, &DISPLAY::out));
 	_player_actions_box->pack_start(*_out_button);
 
+	// ———— CARD SELECTION ————
+	card_select_box = Gtk::manage(new Gtk::Box(Gtk::ORIENTATION_HORIZONTAL, 0));
+	_player_actions_box->pack_start(*card_select_box);
+
+	select_card_button1 = Gtk::manage(new Gtk::Button("Select Card 1"));
+	select_card_button1->signal_clicked().connect(sigc::bind<int>(sigc::mem_fun(*this, &DISPLAY::select_card), 0));
+	card_select_box->pack_start(*select_card_button1);
+	select_card_button2 = Gtk::manage(new Gtk::Button("Select Card 2"));
+	select_card_button2->signal_clicked().connect(sigc::bind<int>(sigc::mem_fun(*this, &DISPLAY::select_card), 1));
+	card_select_box->pack_start(*select_card_button2);
+	select_card_button3 = Gtk::manage(new Gtk::Button("Select Card 3"));
+	select_card_button3->signal_clicked().connect(sigc::bind<int>(sigc::mem_fun(*this, &DISPLAY::select_card), 2));
+	card_select_box->pack_start(*select_card_button3);
+	select_card_button4 = Gtk::manage(new Gtk::Button("Select Card 4"));
+	select_card_button4->signal_clicked().connect(sigc::bind<int>(sigc::mem_fun(*this, &DISPLAY::select_card), 3));
+	card_select_box->pack_start(*select_card_button4);
+	select_card_button5 = Gtk::manage(new Gtk::Button("Select Card 5"));
+	select_card_button5->signal_clicked().connect(sigc::bind<int>(sigc::mem_fun(*this, &DISPLAY::select_card), 4));
+	card_select_box->pack_start(*select_card_button5);
+
+	// ———— BET AMOUNT ————
+	bet_amount = Gtk::manage(new Gtk::Entry());
+	_player_actions_box->pack_start(*bet_amount);
+
+
 	// ———— CARD CHIP STUFF ————
 	user = new USER(_player_number, "YOU", bottom_row_box);
 	user->override_color(*COLOR_WHITE);
@@ -106,6 +131,7 @@ DISPLAY::DISPLAY(int player_number, asio::io_context& io_context, const tcp::res
 
 	main_box->show_all();
 	// hide_user_actions();
+
 }
 
 
@@ -213,7 +239,7 @@ void DISPLAY::do_read_body() {
 						_check_button->show();
 						_fold_button->show();
 						_out_button->show();
-						std::cout << "Played bet\n";
+						bet_amount->show();
 					}
 					else if(play.type == TRADE)
 					{
@@ -222,6 +248,7 @@ void DISPLAY::do_read_body() {
 						_check_button->show();
 						_fold_button->show();
 						_out_button->show();
+						card_select_box->show();
 					}
 					else if(play.type == OUT)
 					{
@@ -294,24 +321,62 @@ void DISPLAY::send_to_server(PLAY play){
 }
 
 
+
+void DISPLAY::select_card(int card_number)
+{
+	int total_selected = 0;
+	for(int x = 0; x < 5; x++) if(card_selected[x]) total_selected++;
+	if(total_selected == 3 && !card_selected[card_number]) return;
+
+	Gtk::Button* buttons[] =	{
+									select_card_button1, 
+									select_card_button2, 
+									select_card_button3,
+									select_card_button4,
+									select_card_button5
+								};
+	card_selected[card_number] = !card_selected[card_number];
+
+	if(card_selected[card_number]) buttons[card_number]->override_color(*COLOR_RED);
+	else buttons[card_number]->override_color(*COLOR_BLACK);
+}
+
+
 void DISPLAY::bet()
 {
-
+	int amount = 0;
+	try
+	{
+		amount = std::stoi(bet_amount->get_text().raw());
+	}
+	catch(std::exception)
+	{
+		std::cout << "You can't follow instructions\n";
+		amount = 1000;  // idiot tax;
+	}
+	PLAY play(BET, amount);
+	play.ID = std::to_string(_player_number);
+	auto message = nlohmann::json{play};
+	send_to_server(play);
+	bet_amount->hide();
 }
 
 
 void DISPLAY::check()
 {
 	PLAY play(CHECK, 0);
-    play.ID = std::to_string(_player_number);
+	play.ID = std::to_string(_player_number);
 	auto message = nlohmann::json{play};
-    send_to_server(play);
+	send_to_server(play);
 }
 
 
 void DISPLAY::fold()
 {
-
+	PLAY play(FOLD, 0);
+	play.ID = std::to_string(_player_number);
+	auto message = nlohmann::json{play};
+	send_to_server(play);
 }
 
 //Quit game
@@ -325,7 +390,8 @@ void DISPLAY::out()
 
 void DISPLAY::trade()
 {
-
+	// get cards
+	hide_user_actions();
 }
 
 
@@ -336,4 +402,7 @@ void DISPLAY::hide_user_actions()
 	_fold_button->hide();
 	_out_button->hide();
 	_trade_button->hide();
+
+	bet_amount->hide();
+	card_select_box->hide();
 }
