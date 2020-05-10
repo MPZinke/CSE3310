@@ -41,6 +41,7 @@ void GAME_SERVER::start_game()
 	temp.ID = players[0]->id();
 	auto tempJ = nlohmann::json{PLAY{}};
 	participants[0]->deliver(chat_message{tempJ});
+    std::cout << std::endl;
 }
 
 //Process an input from the player
@@ -52,9 +53,9 @@ void GAME_SERVER::processInput(chat_message msg) {
         str << "\n";
         std::string msgstr = str.rdbuf()->str();
 		nlohmann::json j = nlohmann::json::parse(msgstr.substr(1, msgstr.find_last_of('}')));
-		std::cout << j << std::endl;
+		std::cout << "INCOMING PACKET " << j << std::endl;
         PLAY play = j.get<PLAY>();
-        if(stoi(play.ID) == currentRound->current_player()){
+        if(/*stoi(play.ID) == currentRound->current_player()*/ true){
             currentRound->process_play(j);
             send_queued_messages();
             if(currentRound->is_finished()) start_new_round();
@@ -87,7 +88,7 @@ void GAME_SERVER::send_queued_messages()
 	{
 		auto message = message_queue[0].begin();
 		participants[message->first]->deliver(message->second);
-		std::cout << message->second.body() << std::endl; 
+		std::cout << "OUTGOING PACKET: " << message->second.body() << std::endl; 
 		message_queue.erase(message_queue.begin());
 	}
 }
