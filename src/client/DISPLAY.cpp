@@ -89,6 +89,7 @@ DISPLAY::DISPLAY(int player_number, asio::io_context& io_context, const tcp::res
 
 	//Trade shouldn't be available in first round of betting
 	_trade_button = Gtk::manage(new Gtk::Button("Trade"));
+	_trade_button->signal_clicked().connect(sigc::mem_fun(*this, &DISPLAY::trade));
 	_player_actions_box->pack_start(*_trade_button);
 
 	_out_button = Gtk::manage(new Gtk::Button("Out"));
@@ -213,12 +214,12 @@ void DISPLAY::do_read_body() {
 						_check_button->show();
 						_fold_button->show();
 						_out_button->show();
+						//REMOVE
+						_trade_button->show();
 						std::cout << "Played bet\n";
 					}
 					else if(play.type == TRADE)
 					{
-						get_cards(play);
-						_trade_button->show();
 						_check_button->show();
 						_fold_button->show();
 						_out_button->show();
@@ -245,7 +246,7 @@ void DISPLAY::do_read_body() {
 	});
 }
 
-void DISPLAY::get_cards(PLAY play){
+std::vector<std::string> DISPLAY::get_cards(PLAY play){
 	std::vector<Card> cards = play.tradedCards;
 	std::vector<std::string> cardNames;
 	Card c;
@@ -254,10 +255,11 @@ void DISPLAY::get_cards(PLAY play){
 		c = cards[i];
 		cardNames.push_back(c.toEnglish());
 	}
-
+	
     hide_user_actions();
 	user->assign_cards(cardNames);
     user->show_all();
+    return cardNames;
 }
 
 void DISPLAY::add_money(PLAY play){
@@ -266,7 +268,7 @@ void DISPLAY::add_money(PLAY play){
 
 void DISPLAY::set_initial(PLAY play){
 	_player_number = stoi(play.ID);
-	get_cards(play);
+	_user_cards = get_cards(play);
 }
 
 void DISPLAY::do_write() {
@@ -296,7 +298,34 @@ void DISPLAY::send_to_server(PLAY play){
 
 void DISPLAY::bet()
 {
+    int amount = 0;
+    amount = bet_window();
+	PLAY play(BET, amount);
+	play.ID = std::to_string(_player_number);
+	auto message = nlohmann::json{play};
+	send_to_server(play);
+}
 
+int DISPLAY::bet_window(){
+    Gtk::Dialog dialog("Please input your bet", *this);
+    
+    Gtk::Grid grid;
+    
+    Gtk::Label l_amount("Bet amount: ");
+    Gtk::Entry e_amount;
+    grid.attach(l_amount, 0, 0, 1, 1);
+    grid.attach(e_amount, 1, 0, 2, 1);
+    
+    dialog.get_content_area()->add(grid);
+    
+    dialog.add_button("Place Bet",1);
+    dialog.show_all();
+    
+    while(dialog.run()){
+        if(e_amount.get_text().size() == 0){e_amount.set_text("0"); continue;}
+        break;
+    }
+    return std::stoi(e_amount.get_text());
 }
 
 
@@ -325,9 +354,79 @@ void DISPLAY::out()
 
 void DISPLAY::trade()
 {
-
+    std::vector<Card> c = trade_window();
+	PLAY play(TRADE);
+	play.ID = std::to_string(_player_number);
+	play.tradedCards = c;
+	play.bet = 0;
+	auto message = nlohmann::json{play};
+	send_to_server(play);
 }
 
+std::vector<Card> DISPLAY::trade_window(){
+    Gtk::Dialog dialog("Trade", *this);
+    
+    Gtk::Grid grid;
+    
+    Gtk::Label l_amount("Select Cards: ");
+    grid.attach(l_amount, 0, 0, 1, 1);
+    
+    Gtk::CheckButton button1(_user_cards[0]);
+    Gtk::CheckButton button2(_user_cards[1]);
+    Gtk::CheckButton button3(_user_cards[2]);
+    Gtk::CheckButton button4(_user_cards[3]);
+    Gtk::CheckButton button5(_user_cards[4]);
+    
+    grid.attach(button1, 0, 1, 1, 1);
+    grid.attach(button2, 0, 2, 1, 1);
+    grid.attach(button3, 0, 3, 1, 1);
+    grid.attach(button4, 0, 4, 1, 1);
+    grid.attach(button5, 0, 5, 1, 1);
+
+    dialog.get_content_area()->add(grid);
+    
+    dialog.add_button("Confirm",1);
+    dialog.show_all();
+    
+    std::vector<std::string> cardNames;
+    std::vector<Card> cards;
+	Card c;
+	std::vector<std::string> tokens;
+	std::string temp;
+    while(dialog.run()){
+        if(button1.get_active()){cardNames.push_back(_user_cards[0]);}
+        if(button2.get_active()){cardNames.push_back(_user_cards[1]);}
+        if(button3.get_active()){cardNames.push_back(_user_cards[2]);}
+        if(button4.get_active()){cardNames.push_back(_user_cards[3]);}
+        if(button5.get_active()){cardNames.push_back(_user_cards[4]);}
+        int size = cardNames.size();
+	    for(int i = 0; i < size; i++){
+	        std::string n = cardNames[i];
+	        std::stringstream split(n);
+	        while(getline(split, temp, ' ')){tokens.push_back(temp);}
+	        std::string r = tokens[0];
+	        int cr;
+	        if(r == "Jack"){cr = 11;}
+	        else if(r == "Queen"){cr = 12;}
+	        else if(r == "King"){cr = 13;}
+	        else if(r == "Ace"){cr = 1;}
+	        else{cr = stoi(r);}
+	        c.rank = cr;
+    
+	        std::string s = tokens[2];
+	        int cs;
+	        if(s == "Clubs"){cs = 0;}
+	        else if(s == "Spades"){cs = 1;}
+	        else if(s == "Diamonds"){cs = 2;}
+	        else if(s == "Hearts"){cs = 3;}
+    
+	        c.suit = cs;
+	        cards.push_back(c);
+	    }
+        break;
+    }
+	return cards;
+}
 
 void DISPLAY::hide_user_actions()
 {

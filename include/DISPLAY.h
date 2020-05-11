@@ -44,7 +44,7 @@ public:
 	DISPLAY(int player_number, asio::io_context& io_context, const tcp::resolver::results_type& endpoints, std::stringstream& inbuffer);
 	~DISPLAY();
 	
-	void get_cards(PLAY play);
+	std::vector<std::string> get_cards(PLAY play);
 	void add_money(PLAY play);
 	void set_initial(PLAY play);
 
@@ -59,6 +59,7 @@ public:
 
 	int _player_number;
 	USER* user;
+	std::vector<std::string> _user_cards;
 private:
 	int _total_players = 1;  // default to just you
 	PLAYER_DISPLAY* all_players[6] = {};
@@ -98,10 +99,12 @@ private:
 	Gtk::Button* _out_button;
 	Gtk::Button* _trade_button;//trade button
 	void bet();
+	int bet_window();
 	void check();
 	void fold();
 	void out();
 	void trade();
+	std::vector<Card> trade_window();
 	void hide_user_actions();
     void send_to_server(PLAY play);
 
