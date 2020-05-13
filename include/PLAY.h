@@ -8,12 +8,15 @@
 #include <string>
 
 enum PLAYTYPE {
-    BET=0,
-    CHECK=1,
-    FOLD=2,
-    TRADE=3,
-    OUT=4,
-    MATCHSTART=5
+    BET, /*SERVER: Receive money being added to player bet. CLIENT: Receive NEW TOTAL MONEY. */
+    CHECK, /*SERVER: Remove no money, do not change current bet. CLIENT: Functionally a pass. */
+    RAISE,
+    CALL,
+    FOLD,
+    TRADE,
+    OUT,
+    MATCHSTART,
+    UPDATE
 };
 
 class PLAY{
