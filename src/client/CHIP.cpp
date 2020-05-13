@@ -43,5 +43,5 @@ void CHIP::label() {
 
 
 void CHIP::change_chip_count(int count) {
-    _chip_count_label->set_text(to_string(count));
+    _chip_count_label->set_text(std::to_string(count));
 }
