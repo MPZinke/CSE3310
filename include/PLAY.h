@@ -8,12 +8,14 @@
 #include <string>
 
 enum PLAYTYPE {
-    BET=0,
-    CHECK=1,
-    FOLD=2,
-    TRADE=3,
-    OUT=4,
-    MATCHSTART=5
+    CHECK=0,
+    BET=1,
+    RAISE=2,
+    CALL=3,
+    FOLD=4,
+    MATCHSTART=5,
+    TRADE=6,
+    OUT=7
 };
 
 class PLAY{
