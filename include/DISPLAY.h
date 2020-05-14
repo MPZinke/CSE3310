@@ -95,14 +95,18 @@ private:
 	Gtk::Box* _player_actions_box;
 	Gtk::Button* _check_button;//check button
 	Gtk::Button* _bet_button;//bet button
+	Gtk::Button* _raise_button;//raise button
+	Gtk::Button* _call_button;//call button
 	Gtk::Button* _fold_button;//fold button
-	Gtk::Button* _out_button;
+	Gtk::Button* _resign_button;
 	Gtk::Button* _trade_button;//trade button
+	void check();
 	void bet();
 	int bet_window();
-	void check();
+	void raise();
+	void call();
 	void fold();
-	void out();
+	void resign();
 	void trade();
 	std::vector<Card> trade_window();
 	void hide_user_actions();

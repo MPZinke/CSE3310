@@ -27,7 +27,7 @@ void ROUND::process_play(nlohmann::json playJson){
     }*/
     //PROCESS CURRENT PLAY
     switch(play.type) {
-        case PLAYTYPE::OUT: remove_current_player(); break;
+        case PLAYTYPE::RESIGN: remove_current_player(); break;
         case PLAYTYPE::FOLD: _player_folds[_current_player] = true; break;
         case PLAYTYPE::TRADE:{
             if(currently_taking_bets()) return remove_current_player();  // CHEATER! (bad UI)

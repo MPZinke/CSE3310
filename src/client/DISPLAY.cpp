@@ -82,6 +82,16 @@ DISPLAY::DISPLAY(int player_number, asio::io_context& io_context, const tcp::res
 	_bet_button = Gtk::manage(new Gtk::Button("Bet"));
 	_bet_button->signal_clicked().connect(sigc::mem_fun(*this, &DISPLAY::bet));
 	_player_actions_box->pack_start(*_bet_button);
+	
+	//Raise button
+	_raise_button = Gtk::manage(new Gtk::Button("Raise"));
+	_raise_button->signal_clicked().connect(sigc::mem_fun(*this, &DISPLAY::raise));
+	_player_actions_box->pack_start(*_raise_button);
+	
+	//Call button
+	_call_button = Gtk::manage(new Gtk::Button("Call"));
+	_call_button->signal_clicked().connect(sigc::mem_fun(*this, &DISPLAY::call));
+	_player_actions_box->pack_start(*_call_button);
 
 	_fold_button = Gtk::manage(new Gtk::Button("Fold"));
 	_fold_button->signal_clicked().connect(sigc::mem_fun(*this, &DISPLAY::fold));
@@ -92,9 +102,9 @@ DISPLAY::DISPLAY(int player_number, asio::io_context& io_context, const tcp::res
 	_trade_button->signal_clicked().connect(sigc::mem_fun(*this, &DISPLAY::trade));
 	_player_actions_box->pack_start(*_trade_button);
 
-	_out_button = Gtk::manage(new Gtk::Button("Out"));
-	_out_button->signal_clicked().connect(sigc::mem_fun(*this, &DISPLAY::out));
-	_player_actions_box->pack_start(*_out_button);
+	_resign_button = Gtk::manage(new Gtk::Button("Resign"));
+	_resign_button->signal_clicked().connect(sigc::mem_fun(*this, &DISPLAY::resign));
+	_player_actions_box->pack_start(*_resign_button);
 
 	// ———— CARD CHIP STUFF ————
 	user = new USER(_player_number, "YOU", bottom_row_box);
@@ -209,7 +219,7 @@ void DISPLAY::do_read_body() {
 						_bet_button->show();
 						_check_button->show();
 						_fold_button->show();
-						_out_button->show();
+						_resign_button->show();
 						//REMOVE
 						_trade_button->show();
 						std::cout << "Played bet\n";
@@ -218,9 +228,9 @@ void DISPLAY::do_read_body() {
 					{
 						_check_button->show();
 						_fold_button->show();
-						_out_button->show();
+						_resign_button->show();
 					}
-					else if(play.type == OUT)
+					else if(play.type == RESIGN)
 					{
 						// quit game
 					}
@@ -335,6 +345,15 @@ void DISPLAY::check()
     send_to_server(play);
 }
 
+void DISPLAY::raise()
+{
+
+}
+
+void DISPLAY::call()
+{
+
+}
 
 void DISPLAY::fold()
 {
@@ -342,9 +361,9 @@ void DISPLAY::fold()
 }
 
 //Quit game
-void DISPLAY::out()
+void DISPLAY::resign()
 {
-	PLAY play(OUT, 0);
+	PLAY play(RESIGN, 0);
     play.ID = std::to_string(_player_number);
     send_to_server(play);
 }
@@ -431,6 +450,6 @@ void DISPLAY::hide_user_actions()
 	_check_button->hide();
 	_bet_button->hide();
 	_fold_button->hide();
-	_out_button->hide();
+	_resign_button->hide();
 	_trade_button->hide();
 }

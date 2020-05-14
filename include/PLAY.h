@@ -14,7 +14,7 @@ enum PLAYTYPE {
     CALL,       //SERVER: Remove money needed to match bet. 
     FOLD,       //SERVER: Drop out of current round.
     TRADE,      //SERVER: Receive cards to remove from hand.
-    OUT,        //CLIENT: Remove from game, no longer has money.
+    RESIGN,        //CLIENT: Remove from game, no longer has money.
     MATCHSTART, //CLIENT: Receive new deck, money, current phase, and ante.
     UPDATE,     //CLIENT: Receive new deck, money, current phase, and bet change. 
     TURNSTART,  //CLIENT: Receive turn start.
