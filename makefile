@@ -40,6 +40,10 @@ preprocess: default
 debug: CXXFLAGS+=-g 
 debug: clean default 
 
+docgen:
+	@doxygen
+	@firefox ./docs/html/index.html
+
 ${TEST_OUT_DIR}/%.test: ${OBJ_FILES} ${TEST_DIR}/%.cpp 
 	$(CXX) ${CXXFLAGS} $^ -o $@ ${LDLIBS}
 	$@
