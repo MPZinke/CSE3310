@@ -24,10 +24,11 @@ public:
     int current_bet();
     HAND current_hand();
     PLAY current_play();
+    PLAY state_as_play();
 
 private:
     std::string _id;
-    int _money=200;
+    int _money=100;
 
     HAND _current_hand;
     int _current_bet;

@@ -28,31 +28,23 @@ void GAME_SERVER::start_game()
 
     //Loop sends begin game information to all players
 	for(int i = 0; i < (int) players.size(); i++){
-        PLAY tempPlay{};
-        tempPlay.type = PLAYTYPE::MATCHSTART;
-        tempPlay.tradedCards = players[i]->current_hand().getCards();
-        tempPlay.ID = players[i]->id();
-		auto temp = nlohmann::json{tempPlay};
+        PLAY tempPlay = players[i]->state_as_play();
+        nlohmann::json temp = tempPlay;
 		participants[i]->deliver(chat_message{temp});
 		std::cout << chat_message{temp}.body() << std::endl; 
 	}
 	// send first person bet message
-	auto temp = PLAY{};
-	temp.ID = players[0]->id();
-	auto tempJ = nlohmann::json{PLAY{}};
+    auto temp = players[0]->state_as_play();
+    temp.phase = false;
+    nlohmann::json tempJ = temp;
 	participants[0]->deliver(chat_message{tempJ});
-    std::cout << std::endl;
 }
 
 //Process an input from the player
 void GAME_SERVER::processInput(chat_message msg) {
 	if(msg.decode_header())
 	{
-		std::stringstream str;
-        str.write(msg.body(), msg.body_length());
-        str << "\n";
-        std::string msgstr = str.rdbuf()->str();
-		nlohmann::json j = nlohmann::json::parse(msgstr.substr(1, msgstr.find_last_of('}')));
+		nlohmann::json j = msg.getJson();
 		std::cout << "INCOMING PACKET " << j << std::endl;
         PLAY play = j.get<PLAY>();
         if(/*stoi(play.ID) == currentRound->current_player()*/ true){

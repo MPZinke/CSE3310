@@ -52,3 +52,11 @@ HAND PLAYER::current_hand() {
 PLAY PLAYER::current_play() {
     return _current_play;
 }
+
+PLAY PLAYER::state_as_play() {
+    auto temp = PLAY{PLAYTYPE::MATCHSTART};
+	temp.ID = id();
+    temp.bet = money();
+    temp.currenthand = current_hand();
+    return temp;
+}

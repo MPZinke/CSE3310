@@ -198,14 +198,10 @@ void DISPLAY::do_read_body() {
 					 asio::buffer(read_msg_.body(), read_msg_.body_length()),
 	[this](std::error_code ec, std::size_t /*length*/) {
 		if (!ec) {
-			inbuffer.write(read_msg_.body(), read_msg_.body_length());
-			inbuffer << "\n";
-			std::string msg = inbuffer.rdbuf()->str();
-			if(msg != ""){
+			if(read_msg_.length() > 0){
 				try{
-					msg = msg.substr(1, msg.find_last_of('}'));
-					std::cout << "DEBUG " << msg << " END DEBUG" << std::endl;
-					nlohmann::json j = nlohmann::json::parse(msg);
+					nlohmann::json j = read_msg_.getJson();
+					std::cout << "DEBUG " << j << " END DEBUG" << std::endl;
 					PLAY play = j.get<PLAY>();
 					if(play.type == BET)
 					{
@@ -247,7 +243,7 @@ void DISPLAY::do_read_body() {
 }
 
 std::vector<std::string> DISPLAY::get_cards(PLAY play){
-	std::vector<Card> cards = play.tradedCards;
+	std::vector<Card> cards = play.currenthand.getCards();
 	std::vector<std::string> cardNames;
 	Card c;
 	
@@ -269,6 +265,8 @@ void DISPLAY::add_money(PLAY play){
 void DISPLAY::set_initial(PLAY play){
 	_player_number = stoi(play.ID);
 	_user_cards = get_cards(play);
+    user->change_chip_amount(play.bet);
+
 }
 
 void DISPLAY::do_write() {
@@ -288,7 +286,7 @@ void DISPLAY::do_write() {
 }
 
 void DISPLAY::send_to_server(PLAY play){
-	auto message = nlohmann::json{play};
+	nlohmann::json message = play;
 	std::cout << "Writing message...";
 	write(chat_message{message});
 	std::cout << "DONE\n";

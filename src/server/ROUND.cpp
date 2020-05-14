@@ -1,4 +1,5 @@
 #include "ROUND.h"
+const int ROUND::ANTE = 1;
 
 #include<iostream>  //TESTING
 
@@ -10,6 +11,7 @@ ROUND::ROUND(int round_number, std::vector<PLAYER*> &remaining_players, MessageQ
     for(unsigned int x = 0; x < _remaining_players.size(); x++) {
         _remaining_players[x]->setHand(_deck.draw_card(5));
         _remaining_players[x]->current_hand().sort();
+        _remaining_players[x]->money(_remaining_players[x]->money()-ANTE);
     }
 }
 
@@ -71,7 +73,7 @@ void ROUND::process_play(nlohmann::json playJson){
 void ROUND::add_message_to_queue(PLAY current_play)
 {
     current_play.ID = _remaining_players[_current_player]->id();
-    auto message = nlohmann::json{current_play};
+    nlohmann::json message = current_play;
     std::cout << "MESSAGE QUEUED: " << message << std::endl;
     message_queue->push_back({{_current_player, chat_message{message}}});
 }
@@ -80,7 +82,7 @@ void ROUND::add_message_to_queue(PLAY current_play)
 void ROUND::add_message_to_queue(int player, PLAY play)
 {
     play.ID = _remaining_players[player]->id();
-    auto message = nlohmann::json{play};
+    nlohmann::json message = play;
     std::cout << "MESSAGE QUEUED: " << message << std::endl;
     message_queue->push_back({{player, chat_message{message}}});
 }

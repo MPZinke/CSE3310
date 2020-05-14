@@ -40,6 +40,8 @@ private:
 	std::vector<PLAYER*> &_remaining_players;
 	MessageQueue* message_queue;
 	DECK _deck;
+    
+    static const int ANTE;
 
 	int _current_pot;
 	int _current_player;

@@ -32,7 +32,10 @@ chat_message::chat_message(nlohmann::json msg) {
 }
 
 nlohmann::json chat_message::getJson(){
-    return nlohmann::json{std::string{body()}};
+    std::string message = body();
+    message = message.substr(message.find_first_of('{'), message.find_last_of('}')-message.find_first_of('{')+1);
+    message = message.substr(0, length());
+    return nlohmann::json::parse(message);
 }
 
 const char* chat_message::data() const {

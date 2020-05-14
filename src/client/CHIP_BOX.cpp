@@ -53,7 +53,7 @@ int CHIP_BOX::current_value() {
 }
 
 void CHIP_BOX::change_chip_amount(int amount) {
-    _current_chip_value = _current_chip_value + amount;
+    _current_chip_value = amount;
 
     int blue_chip_amount = _current_chip_value / BLUE_CHIP_VAL;
     int red_chip_amount = (_current_chip_value - (blue_chip_amount * BLUE_CHIP_VAL)) / RED_CHIP_VAL;

@@ -8,15 +8,18 @@
 #include <string>
 
 enum PLAYTYPE {
-    BET, /*SERVER: Receive money being added to player bet. CLIENT: Receive NEW TOTAL MONEY. */
-    CHECK, /*SERVER: Remove no money, do not change current bet. CLIENT: Functionally a pass. */
-    RAISE,
-    CALL,
-    FOLD,
-    TRADE,
-    OUT,
-    MATCHSTART,
-    UPDATE
+    BET,        //SERVER: Remove money being added to player bet. 
+    CHECK,      //SERVER: Remove no money, do not change current bet. 
+    RAISE,      //SERVER: Remove money needed to raise bet. 
+    CALL,       //SERVER: Remove money needed to match bet. 
+    FOLD,       //SERVER: Drop out of current round.
+    TRADE,      //SERVER: Receive cards to remove from hand.
+    OUT,        //CLIENT: Remove from game, no longer has money.
+    MATCHSTART, //CLIENT: Receive new deck, money, current phase, and ante.
+    UPDATE,     //CLIENT: Receive new deck, money, current phase, and bet change. 
+    TURNSTART,  //CLIENT: Receive turn start.
+    MESSAGE     //CLIENT: Receive text message.
+                //SERVER: Receive and send text message.
 };
 
 class PLAY{
@@ -31,7 +34,9 @@ class PLAY{
 
         PLAYTYPE type;
         int bet;
+        bool phase;
         std::string ID;
+        std::string message;
         std::vector<Card> tradedCards;
         HAND currenthand;
 };
