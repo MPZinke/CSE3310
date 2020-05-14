@@ -14,7 +14,9 @@
 typedef std::shared_ptr<chat_participant> chat_participant_ptr;
 typedef std::vector<std::map<int, chat_message>> MessageQueue;
 
-
+/**
+ * @brief Main server side class for managing the actual poker game.
+ */
 class GAME_SERVER {
 	public:
 		GAME_SERVER();

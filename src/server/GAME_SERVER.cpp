@@ -6,13 +6,17 @@
 #include "PLAYER.h"
 #include "PLAY.h"
 
-//Create Game Server
+/*
+ * @brief Create Game Server
+ */
 GAME_SERVER::GAME_SERVER()
 : players{std::vector<PLAYER*>{}}, participants{std::vector<chat_participant_ptr>{}} {
 
 }
 
-//Add a player every time the server receives a new connection
+/*
+ * @brief Add a player every time the server receives a new connection
+ */
 void GAME_SERVER::addPlayer(chat_participant_ptr player) {
 	if(participants.size() == 4 || has_started()) return;
 	participants.push_back(player);
@@ -20,7 +24,9 @@ void GAME_SERVER::addPlayer(chat_participant_ptr player) {
 	if(players.size() == 4) start_game();  //TESTING
 }
 
-//Start the game, initialize a round and stop allowing new players to join
+/*
+ * @brief Start the game, initialize a round and stop allowing new players to join
+ */
 void GAME_SERVER::start_game()
 {
 	game_started = true;
@@ -40,7 +46,9 @@ void GAME_SERVER::start_game()
 	participants[0]->deliver(chat_message{tempJ});
 }
 
-//Process an input from the player
+/*
+ * @brief Process an input from the player
+ */
 void GAME_SERVER::processInput(chat_message msg) {
 	if(msg.decode_header())
 	{
@@ -55,7 +63,9 @@ void GAME_SERVER::processInput(chat_message msg) {
 	}
 }
 
-//Start a new round and destroy the old one
+/*
+ * @brief Start a new round and destroy the old one
+ */
 void GAME_SERVER::start_new_round()
 {
     std::cout << "Starting new round" << std::endl;
@@ -73,7 +83,9 @@ bool GAME_SERVER::has_started()
 	return game_started;
 }
 
-//Dequeue the messages that have been queued
+/*
+ * @brief Dequeue the messages that have been queued
+ */
 void GAME_SERVER::send_queued_messages()
 {
 	while(message_queue.size())
@@ -85,7 +97,9 @@ void GAME_SERVER::send_queued_messages()
 	}
 }
 
-//Remove a player that has left the server
+/*
+ * @brief Remove a player that has left the server
+ */
 void GAME_SERVER::leave(chat_participant_ptr participant){
     int i;
     bool flag = false;

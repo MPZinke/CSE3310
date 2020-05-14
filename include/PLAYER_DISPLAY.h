@@ -17,6 +17,9 @@
 
 #include<gtkmm.h>
 
+/**
+ * @brief GTKMM class to show a player.
+ */
 class PLAYER_DISPLAY : public Gtk::Box {
 public:
     PLAYER_DISPLAY(int, std::string, Gtk::Box*, Gtk::Orientation=Gtk::ORIENTATION_VERTICAL, int=0);

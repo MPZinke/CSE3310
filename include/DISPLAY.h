@@ -37,7 +37,9 @@ using asio::ip::tcp;
 
 typedef std::deque<chat_message> chat_message_queue;
 
-
+/**
+ * @brief Main class of client-side, takes role of both chat client and visual for program.
+ */
 class DISPLAY: public Gtk::Window {
 public:
    public:

@@ -21,6 +21,9 @@
 #include"CHIP_BOX.h"
 #include"CARD_PLAYER.h"
 
+/**
+ * @brief GTKMM class to display User.
+ */
 class USER : public CARD_PLAYER {
 public:
     USER(int, std::string, Gtk::Box*, Gtk::Orientation=Gtk::ORIENTATION_VERTICAL, int=0);

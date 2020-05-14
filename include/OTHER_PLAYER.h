@@ -21,6 +21,9 @@
 #include"CHIP_BOX.h"
 #include"CARD_PLAYER.h"
 
+/**
+ * @brief GTKMM class for showing the other players.
+ */
 class OTHER_PLAYER : public CARD_PLAYER {
 public:
     OTHER_PLAYER(int, std::string, Gtk::Box*, Gtk::Orientation=Gtk::ORIENTATION_VERTICAL, int=0);

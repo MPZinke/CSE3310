@@ -9,6 +9,9 @@
 #include "CARD.h"
 #include "PLAY.h"
 
+/**
+ * @brief Holds a player's information for the game.
+ */
 class PLAYER {
 public:
     PLAYER();

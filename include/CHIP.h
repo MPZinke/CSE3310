@@ -19,6 +19,9 @@
 
 #include"GLOBAL.h"
 
+/**
+ * @brief GTKMM class to show chips
+ */
 class CHIP : public Gtk::Box {
 public:
     CHIP(int, std::string);

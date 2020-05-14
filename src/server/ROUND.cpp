@@ -3,6 +3,9 @@ const int ROUND::ANTE = 1;
 
 #include<iostream>  //TESTING
 
+/*
+ * @brief Round constructor, builds a new round for game loop.
+ */
 ROUND::ROUND(int round_number, std::vector<PLAYER*> &remaining_players, MessageQueue* queue_ptr)
     : _round_number{round_number}, _remaining_players{remaining_players}, message_queue{queue_ptr}, _current_player{0}
 {
@@ -16,7 +19,9 @@ ROUND::ROUND(int round_number, std::vector<PLAYER*> &remaining_players, MessageQ
 }
 
 // ——————————————— GAME COMMUNICATION ———————————————
-
+/*
+ * @brief Process play from json.
+ */
 void ROUND::process_play(nlohmann::json playJson){
     PLAY play = playJson.get<PLAY>();
     PLAYER* current_player = _remaining_players[_current_player];
@@ -69,7 +74,9 @@ void ROUND::process_play(nlohmann::json playJson){
     if(is_finished()) finish_round();
 }
 
-
+/*
+ * @brief Add a message to the queue.
+ */
 void ROUND::add_message_to_queue(PLAY current_play)
 {
     current_play.ID = _remaining_players[_current_player]->id();
@@ -78,7 +85,9 @@ void ROUND::add_message_to_queue(PLAY current_play)
     message_queue->push_back({{_current_player, chat_message{message}}});
 }
 
-
+/*
+ * @brief Add a message to the queue for specific player.
+ */
 void ROUND::add_message_to_queue(int player, PLAY play)
 {
     play.ID = _remaining_players[player]->id();
@@ -89,10 +98,12 @@ void ROUND::add_message_to_queue(int player, PLAY play)
 
 
 // ——————————————————— UTILITY ———————————————————
-
+/*
+ * @brief Return phase.
+ */
 bool ROUND::is_finished()
 {
-    return _round_phase == 1;
+    return _round_phase == 5;
 }
 
 
@@ -101,7 +112,9 @@ bool ROUND::is_finished()
 
 // ————————————————— WHOLE GAME —————————————————
 
-
+/*
+ * @brief Remove current player from the round.
+ */
 void ROUND::remove_current_player()
 {
     for(unsigned int x = _current_player; x < _remaining_players.size() - 1; x++)
@@ -113,7 +126,9 @@ void ROUND::remove_current_player()
     _remaining_players.erase(_remaining_players.begin() + _current_player);
 }
 
-
+/*
+ * @brief Run round finish up.
+ */
 void ROUND::finish_round()
 {
     int highest_hand_value = 0;
@@ -157,6 +172,9 @@ void ROUND::finish_round()
 
 // ——————————————————— UTILITY ———————————————————
 
+/*
+ * @brief Check and return if all other players have folded.
+ */
 bool ROUND::all_other_players_have_folded()
 {
     for(unsigned int x = _current_player; x < _remaining_players.size(); x++)
@@ -167,7 +185,9 @@ bool ROUND::all_other_players_have_folded()
     return true;
 }
 
-
+/*
+ * @brief Check to see if the current bet is higher than anyone's value.
+ */
 bool ROUND::bet_amount_exceeds_other_players_worth(int current_bet)
 {
     for(unsigned int x = 0; x < _remaining_players.size(); x++)
@@ -175,34 +195,48 @@ bool ROUND::bet_amount_exceeds_other_players_worth(int current_bet)
     return false;
 }
 
-
+/*
+ * @brief Taking bets?
+ */
 bool ROUND::currently_taking_bets()
 {
     return _round_phase % 2 == 0;
 }
 
+/*
+ * @brief Get round number.
+ */
 int ROUND::round_number()
 {
     return _round_number;
 }
 
+/*
+ * @brief Get current player.
+ */
 int ROUND::current_player() {
     return _current_player;
 }
 
+/*
+ * @brief Draw a single card from the deck.
+ */
 Card ROUND::draw_card()
 {
     return _deck.draw_card();
 }
 
-
+/*
+ * @brief Draw cards from the deck.
+ */
 std::vector<Card> ROUND::draw_card(int draw_amount)
 {
     return _deck.draw_card(draw_amount);
 }
 
-
-
+/*
+ * @brief Return the currnet highest bet.
+ */
 int ROUND::highest_bet()
 {
     int current_highest = _player_bets[0];
@@ -211,7 +245,9 @@ int ROUND::highest_bet()
     return current_highest;
 }
 
-
+/*
+ * @brief Round destructor
+ */
 ROUND::~ROUND(){
 
 };

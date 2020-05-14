@@ -20,6 +20,9 @@
 #include"CHIP.h"
 #include"GLOBAL.h"
 
+/**
+ * @brief GTMM class to show all chips and their values
+ */
 class CHIP_BOX : public Gtk::Box {
 public:
     CHIP_BOX(Gtk::Box*, Gtk::Orientation=Gtk::ORIENTATION_HORIZONTAL, int=75);

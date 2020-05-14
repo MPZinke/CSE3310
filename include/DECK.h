@@ -7,7 +7,9 @@
 
 #include"CARD.h"
 
-
+/**
+ * @brief Class to hold a deck of cards, manages shuffling and keeps track of remaining cards.
+ */
 class DECK {
 public:
     DECK();

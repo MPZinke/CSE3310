@@ -21,6 +21,9 @@
 #include"CHIP_BOX.h"
 #include"PLAYER_DISPLAY.h"
 
+/**
+ * @brief GTKMM class extension for a player that uses cards.
+ */
 class CARD_PLAYER : public PLAYER_DISPLAY {
 public:
     CARD_PLAYER(int, std::string, Gtk::Box*, Gtk::Orientation=Gtk::ORIENTATION_VERTICAL, int=0);

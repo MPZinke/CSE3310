@@ -11,6 +11,9 @@
 
 typedef std::vector<std::map<int, chat_message>> MessageQueue;
 
+/**
+ * @brief Round loop logic. Contains all relevant methods to run a round.
+ */
 class ROUND {
 public:
 	ROUND(int, std::vector<PLAYER*>&, MessageQueue*);

@@ -32,6 +32,9 @@ const std::map<int, std::string> handNameStrings{
     {9, "ROYAL_FLUSH"}
 };
 
+/**
+ * @brief Implements a hand of cards, primarily provides way to value 5 cards.
+ */
 class HAND {
 public:
     HAND();

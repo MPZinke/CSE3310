@@ -1,9 +1,20 @@
 #include "PLAY.h"
 #include "json.hpp"
-
+/*
+ * @brief Default PLAY constructor
+ */
 PLAY::PLAY(): PLAY(BET, 0) {}
+/*
+ * @brief PLAY constructor with type
+ */
 PLAY::PLAY(PLAYTYPE type): type{type} {}
+/*
+ * @brief PLAY constructor with type and a HAND
+ */
 PLAY::PLAY(PLAYTYPE type, HAND hand): type{type}, currenthand{hand} {}
+/*
+ * @brief PLAY constructor with type and bet.
+ */
 PLAY::PLAY(PLAYTYPE type, int bet): type{type}, bet{bet} {}
 
 void from_json(const nlohmann::json& j, PLAY& play) {

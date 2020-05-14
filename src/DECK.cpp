@@ -4,6 +4,9 @@
 #include <random>
 #include <ctime>
 
+/*
+ * @brief Default deck constructor.
+ */
 DECK::DECK() {
     std::srand(std::time(nullptr));
     for(int i = 0; i < 52; i++) {
@@ -13,12 +16,17 @@ DECK::DECK() {
     }
 }
 
+/*
+ * @brief Receive next card from Deck.
+ */
 Card DECK::draw_card() {
     if(_next_card_in_deck_index >= 52) throw "No more cards";
     return _cards[_next_card_in_deck_index++];
 }
 
-
+/*
+ * @brief Draw n cards from Deck.
+ */
 std::vector<Card> DECK::draw_card(int draw_amount) {
     if(_next_card_in_deck_index + draw_amount >= 52) throw "No more cards";
     std::vector<Card> new_cards;
@@ -27,11 +35,16 @@ std::vector<Card> DECK::draw_card(int draw_amount) {
     return new_cards;
 }
 
-
+/*
+ * @brief Check if deck has cards.
+ */
 bool DECK::still_has_cards() {
     return _next_card_in_deck_index < 52;
 }
 
+/*
+ * @brief Shuffle the deck.
+ */
 void DECK::shuffle(){
     for(int i = 0; i < 52; i++){
         for(int k = i; k < 52; k++){
@@ -43,6 +56,9 @@ void DECK::shuffle(){
     }
 }
 
+/*
+ * @brief Shuffle only the remaining cards.
+ */
 void DECK::shuffleRemaining(){
     for(int i = _next_card_in_deck_index; i < (52-_next_card_in_deck_index)/2; i++){
         for(int k = i; k < 52; k++){
@@ -54,6 +70,9 @@ void DECK::shuffleRemaining(){
     }
 }
 
+/*
+ * @brief Reset deck.
+ */
 void DECK::mergeDiscarded(){
     _next_card_in_deck_index = 0;
     shuffle();

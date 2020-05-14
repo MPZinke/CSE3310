@@ -17,7 +17,9 @@
 
 #include"GLOBAL.h"
 
-
+/**
+ * @brief GTKMM class to show Cards
+ */
 class CARDDISPLAY {
 public:
     CARDDISPLAY(std::string, Gtk::Box*, bool=false);

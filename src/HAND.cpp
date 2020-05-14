@@ -3,32 +3,52 @@
 #include<algorithm>
 #include<sstream>
 
+/*
+ * @brief Default HAND constructor
+ */
 HAND::HAND() {
     
 }
 
+/*
+ * @brief Construct hand from cards.
+ */
 HAND::HAND(std::vector<Card> inCards): cards{inCards} { 
 }
 
+/*
+ * @brief Construct HAND from json.
+ */
 HAND::HAND(nlohmann::json j) {
     j.get<HAND>();
 }
 
+/*
+ * @brief Construct HAND from string (json string).
+ */
 HAND::HAND(std::string str) : HAND(nlohmann::json{str}) { 
 
 }
 
+/*
+ * @brief Sort hand using asInt.
+ */
 void HAND::sort() {
     std::sort(cards.begin(), cards.end(), [](Card a, Card b) {
         return a.asInt() < b.asInt();
     });
 }
 
+/*
+ * @brief Return all cards.
+ */
 const std::vector<Card>& HAND::getCards() {
     return cards;
 }
 
-//Check for four of a kind
+/*
+ * @brief Check for four of a kind
+ */
 bool HAND::checkFourOfKind(std::vector<Card> cards) {
     /*
     0&1&2&3!4
@@ -44,7 +64,9 @@ bool HAND::checkFourOfKind(std::vector<Card> cards) {
     return flag;
 }
 
-//Check for full house
+/*
+ * @brief Check for full house
+ */
 bool HAND::checkFullHouse(std::vector<Card> cards) {
     bool flag = false;
     if(cards[0].rank == cards[1].rank && cards[2].rank == cards[4].rank) {
@@ -56,7 +78,9 @@ bool HAND::checkFullHouse(std::vector<Card> cards) {
     return flag;
 }
 
-//Check for Flush
+/*
+ * @brief Check for Flush
+ */
 bool HAND::checkFlush(std::vector<Card> cards) {
     //Save suit of first card to compare to all other cards
     int suit = cards[0].suit;
@@ -69,7 +93,9 @@ bool HAND::checkFlush(std::vector<Card> cards) {
     return flag;
 }
 
-//Check for straight
+/*
+ * @brief Check for straight
+ */
 bool HAND::checkStraight(std::vector<Card> cards) {
     int rank = cards[0].rank;
     bool flag = true;
@@ -80,7 +106,9 @@ bool HAND::checkStraight(std::vector<Card> cards) {
     return flag;
 }
 
-//Checks for a set of three of a kind
+/*
+ * @brief Checks for a set of three of a kind
+ */
 bool HAND::checkThreeOfAKind(std::vector<Card> cards) {
     /*
     0 == 2 && 2 != 3
@@ -100,14 +128,18 @@ bool HAND::checkThreeOfAKind(std::vector<Card> cards) {
     return flag;
 }
 
-//Helper function that runs == && == && != && != on 8 numbers to check for pairs exhaustively
+/*
+ * @brief Helper function that runs == && == && != && != on 8 numbers to check for pairs exhaustively
+ */
 bool HAND::checkSpecificPairs(std::vector<Card> cards, int pairs[8]) {
     std::transform(pairs, pairs+8, pairs, [&] (int ind) -> int { return cards[ind].rank; });
 
     return (pairs[0] == pairs[1]) && (pairs[2] == pairs[3]) && (pairs[4] != pairs[5]) && (pairs[6] != pairs[7]);
 }
 
-//Check for two pairs.
+/*
+ * @brief Check for two pairs.
+ */
 bool HAND::checkTwoPairs(std::vector<Card> cards) {
     /*
     0&1 2&3 1!2 3!4
@@ -130,13 +162,17 @@ bool HAND::checkTwoPairs(std::vector<Card> cards) {
     return  flag;
 }
 
-//Helper function to check for a single pair by applying a != && == && != set of operations
+/*
+ * @brief Helper function to check for a single pair by applying a != && == && != set of operations
+ */
 bool HAND::checkSinglePair(std::vector<Card> cards, int pairs[6]) {
     std::transform(pairs, pairs+6, pairs, [&] (int ind) -> int { return cards[ind].rank; });
     return (pairs[0] != pairs[1]) && (pairs[2] == pairs[3]) && (pairs[4] != pairs[5]);
 }
 
-//Check for a single pair
+/*
+ * @brief Check for a single pair
+ */
 bool HAND::checkOnePair(std::vector<Card> cards) {
     /*
     1!2 0&1 1!2
@@ -167,12 +203,16 @@ bool HAND::checkOnePair(std::vector<Card> cards) {
     return flag;
 }
 
-//Check for both a straight and a flush
+/*
+ * @brief Check for both a straight and a flush
+ */
 bool HAND::checkSFlush(std::vector<Card> cards) {
     return checkFlush(cards) && checkStraight(cards);
 }
 
-//Check for Flush and verify ranks match royal ranks
+/*
+ * @brief Check for Flush and verify ranks match royal ranks
+ */
 bool HAND::checkRFlush(std::vector<Card> cards) {
     if(checkFlush(cards)) {
         //Const set of ranks to check royals
@@ -188,7 +228,9 @@ bool HAND::checkRFlush(std::vector<Card> cards) {
     return false;
 }
 
-//Value single hand exhaustively.
+/*
+ * @brief Value single hand exhaustively.
+ */
 unsigned char HAND::value() {
     sort();
     unsigned char value = 0x00;
@@ -225,6 +267,9 @@ unsigned char HAND::value() {
     return value;
 }
 
+/*
+ * @brief Value as a string.
+ */
 std::string HAND::valueStr(){
     if(currentValue == 0x00)
         value();
@@ -232,6 +277,7 @@ std::string HAND::valueStr(){
     strstr << handNameStrings.at((int) currentValue>>4) << " With Rank of " << (int) (currentValue&0x0F); 
     return strstr.str();
 }
+
 
 void to_json(nlohmann::json& j, const HAND& hand) {
     j = nlohmann::json{{"cards", hand.cards}};
@@ -246,6 +292,9 @@ std::ostream& operator<<(std::ostream& os, const HAND& hand) {
     return os << j; 
 }
 
+/*
+ * @brief Swap to cards in hand.
+ */
 void HAND::swap(int ind1, int ind2){
     Card temp = cards[ind1];
     cards[ind1] = cards[ind2];

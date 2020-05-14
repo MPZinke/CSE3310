@@ -3,6 +3,9 @@
 
 #include <json.hpp>
 
+/**
+ *  @brief Enum for ranks
+ */
 enum RANK_ENUM {
     ACE,
     TWO,
@@ -19,14 +22,19 @@ enum RANK_ENUM {
     KING
 };
 
-
-enum SUIT_ENUM {
+/**
+ *  @brief Enum for suits
+ */
+ enum SUIT_ENUM {
     CLUBS,
     SPADES,
     DIAMONDS,
     HEARTS
 };
 
+/**
+ * @brief Map for converting from rank enum to string
+ */
 const std::map<int, std::string> RANK_STRINGS =	{
     {2, "2"}, {3, "3"}, {4, "4"},
     {5, "5"}, {6, "6"}, {7, "7"},
@@ -35,12 +43,18 @@ const std::map<int, std::string> RANK_STRINGS =	{
     {13, "King"}, {1, "Ace"}
 };
 
-
-const std::map<int, std::string> SUIT_STRINGS =	{
+/**
+ * @brief Map for converting from suit enum to string
+ */
+ const std::map<int, std::string> SUIT_STRINGS =	{
     {0, "Clubs"}, {1, "Spades"},
     {2, "Diamonds"}, {3, "Hearts"}
 };
 
+/**
+ * @brief Card class, holds basic functionality for Card.
+ * @details This card holds all of the functionality needed for a Card, including json parsers and helper functions to read the card as english text.
+ */
 class Card{
     public:
         Card();
