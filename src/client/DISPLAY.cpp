@@ -449,7 +449,8 @@ void DISPLAY::hide_user_actions()
 {
 	_check_button->hide();
 	_bet_button->hide();
+	_raise_button->hide();
+	_call_button->hide();
 	_fold_button->hide();
-	_resign_button->hide();
 	_trade_button->hide();
 }
