@@ -24,21 +24,18 @@ ROUND::ROUND(int round_number, std::vector<PLAYER*> &remaining_players, MessageQ
 void ROUND::process_play(nlohmann::json playJson) {
     PLAY play = playJson.get<PLAY>();
     PLAYER* current_player = _remaining_players[_current_player];
-    /* TODO fix ID check
-    if(current_player->id() != play.ID)
-    {
-        std::cout << "Out of order player\n";
-    }*/
-    //PROCESS CURRENT PLAY
+
     switch(play.type) {
         case PLAYTYPE::RESIGN:
             remove_current_player();
+            _current_player--;
+            current_player = _remaining_players[_current_player];
             break;
         case PLAYTYPE::FOLD:
             _player_folds[_current_player] = true;
             break;
         case PLAYTYPE::TRADE: {
-            if(currently_taking_bets()) return remove_current_player();  // CHEATER! (bad UI)
+            if(currently_taking_bets()) return; //remove_current_player();  // CHEATER! (bad UI)
             _remaining_players[_current_player]->trade(play.tradedCards, _deck);
             break;
         }
@@ -126,23 +123,7 @@ bool ROUND::is_finished() {
  * @brief Remove current player from the round.
  */
 void ROUND::remove_current_player() { 
-    for(int i = message_queue.size()-1; i >= 0; i--){
-        auto tuple = message_queue[i].begin();
-        nlohmann::json j = tuple->second.getJson();
-        bool readd = false;
-        if(tuple->first > _current_player){
-            readd = true;
-        }
-        if(j.get<PLAY>().ID > std::to_string(_current_player)){
-            j = tuple->second.getJson();
-            j["ID"] = std::to_string(std::stoi(j["ID"].get<std::string>())-1);
-            readd = true;
-        }
-        if(readd) add_message_to_queue(tuple->first-1, j);
-        if(tuple->first == _current_player){
-            message_queue.erase(message_queue.begin()+i);
-        }
-    }
+    message_queue.resize(0); 
 
     for(unsigned int x = _current_player; x < _remaining_players.size() - 1; x++) {
         _player_folds[x] = _player_folds[x+1];
