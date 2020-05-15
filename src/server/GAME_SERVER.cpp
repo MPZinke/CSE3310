@@ -31,14 +31,10 @@ void GAME_SERVER::start_game() {
     game_started = true;
     currentRound = new ROUND(0, players, &message_queue);
 
-    //Loop sends begin game information to all players
     for(int i = 0; i < (int) players.size(); i++) {
-        PLAY tempPlay = players[i]->state_as_play();
-        nlohmann::json temp = tempPlay;
-        participants[i]->deliver(chat_message{temp});
-        std::cout << chat_message{temp}.body() << std::endl;
-    }
-    for(int i = 0; i < (int) players.size(); i++) {
+        PLAY play = players[i]->state_as_play();
+        play.type = MATCHSTART;
+        currentRound->add_message_to_queue(i, (nlohmann::json) play);
         for(int k = 0; k < (int) players.size(); k++) {
             auto &dataOf = players[k];
             if(i != k) {

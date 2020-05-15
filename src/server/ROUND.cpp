@@ -70,8 +70,6 @@ void ROUND::process_play(nlohmann::json playJson) {
                 PLAY play = recipient->state_as_play();
                 play.type = UPDATE;
                 add_message_to_queue(i, (nlohmann::json) play);
-                play.phase = _round_phase%2==1;
-                play.type = TURNSTART;
             } else {
                 PLAY play{UPDATE};
                 play.ID = dataOf->id();
@@ -80,6 +78,12 @@ void ROUND::process_play(nlohmann::json playJson) {
             }
         }
     }
+
+    PLAY start{TURNSTART};
+    start.phase = _round_phase%2==1;
+    start.bet = highest_bet();
+    add_message_to_queue(_current_player, start);
+
     std::cout << "Next player: " << _current_player << "\tID: " << current_player->id() << "\tNext round: " << _round_number << std::endl << std::endl;  //TESTING
     if(is_finished()) finish_round();
 }
