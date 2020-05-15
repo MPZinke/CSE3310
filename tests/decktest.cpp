@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-int main(){
+int main() {
     DECK deck{};
 
     deck.draw_card();
@@ -11,6 +11,6 @@ int main(){
     nlohmann::json j = deck;
 
     std::cout << j << std::endl;
-    
+
     return 0;
 }

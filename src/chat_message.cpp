@@ -24,16 +24,16 @@ chat_message::chat_message()
 }
 
 chat_message::chat_message(nlohmann::json msg) {
-    std::string msgstr = msg.dump(); 
+    std::string msgstr = msg.dump();
     const char* str = msgstr.c_str();
     body_length(std::strlen(str));
     std::memcpy(body(), str, body_length());
     encode_header();
 }
 
-nlohmann::json chat_message::getJson(){
+nlohmann::json chat_message::getJson() {
     std::string message = body();
-    message = message.substr(message.find_first_of('{'), message.find_last_of('}')-message.find_first_of('{')+1);
+    message = message.substr(0, body_length_);
     message = message.substr(0, length());
     return nlohmann::json::parse(message);
 }
@@ -83,18 +83,5 @@ void chat_message::encode_header() {
     char header[header_length + 1] = "";
     std::sprintf(header, "%3X", static_cast<int>(body_length_));
     std::memcpy(data_, header, header_length);
-}
-
-/*void to_json(nlohmann::json& j,const chat_message& msg) {
-    std::stringstream str{};
-    if(msg.decode_header()) {
-        str.write(msg.body(), msg.body_length());
-    }
-    j << str;
-}*/
-
-void from_json(const nlohmann::json& j, chat_message& msg) {
-    chat_message temp{j};
-    msg = temp;
 }
 

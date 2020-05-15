@@ -25,7 +25,7 @@ enum RANK_ENUM {
 /**
  *  @brief Enum for suits
  */
- enum SUIT_ENUM {
+enum SUIT_ENUM {
     CLUBS,
     SPADES,
     DIAMONDS,
@@ -46,7 +46,7 @@ const std::map<int, std::string> RANK_STRINGS =	{
 /**
  * @brief Map for converting from suit enum to string
  */
- const std::map<int, std::string> SUIT_STRINGS =	{
+const std::map<int, std::string> SUIT_STRINGS =	{
     {0, "Clubs"}, {1, "Spades"},
     {2, "Diamonds"}, {3, "Hearts"}
 };
@@ -55,19 +55,19 @@ const std::map<int, std::string> RANK_STRINGS =	{
  * @brief Card class, holds basic functionality for Card.
  * @details This card holds all of the functionality needed for a Card, including json parsers and helper functions to read the card as english text.
  */
-class Card{
-    public:
-        Card();
-        Card(int suit, int rank);
- 
-        friend void to_json(nlohmann::json& j, const Card& card);
-        friend void from_json(const nlohmann::json& j, Card& card);
-        int asInt();
-        std::string toEnglish();
-        friend bool operator==(const Card& card1, const Card& card2);
+class Card {
+public:
+    Card();
+    Card(int suit, int rank);
 
-        int suit;
-        int rank;
+    friend void to_json(nlohmann::json& j, const Card& card);
+    friend void from_json(const nlohmann::json& j, Card& card);
+    int asInt();
+    std::string toEnglish();
+    friend bool operator==(const Card& card1, const Card& card2);
+
+    int suit;
+    int rank;
 };
 
 #endif

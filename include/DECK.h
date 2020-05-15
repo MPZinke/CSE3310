@@ -16,7 +16,7 @@ public:
 
     Card draw_card();
     std::vector<Card> draw_card(int);  // draw multiple cards
-    
+
     void shuffle();
     void shuffleRemaining();
     void mergeDiscarded();

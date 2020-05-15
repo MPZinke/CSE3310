@@ -18,28 +18,28 @@ typedef std::vector<std::map<int, chat_message>> MessageQueue;
  * @brief Main server side class for managing the actual poker game.
  */
 class GAME_SERVER {
-	public:
-		GAME_SERVER();
-		
-		void addPlayer(chat_participant_ptr player); 
-		void start_game();
-        void leave(chat_participant_ptr participant);
-		void processInput(chat_message msg);
-		bool has_started();
+public:
+    GAME_SERVER();
 
-	private:
-		void processRound();
-		void send_queued_messages();
-		void updatePlayers();
+    void addPlayer(chat_participant_ptr player);
+    void start_game();
+    void leave(chat_participant_ptr participant);
+    void processInput(chat_message msg);
+    bool has_started();
 
-		bool updateRound();
-		void start_new_round();
+private:
+    void processRound();
+    void send_queued_messages();
+    void updatePlayers();
 
-		bool game_started = false;
-		ROUND* currentRound;
-		std::vector<PLAYER*> players;
-		std::vector<chat_participant_ptr> participants;
-		MessageQueue message_queue;
+    bool updateRound();
+    void start_new_round();
+
+    bool game_started = false;
+    ROUND* currentRound;
+    std::vector<PLAYER*> players;
+    std::vector<chat_participant_ptr> participants;
+    MessageQueue message_queue;
 };
 
 #endif

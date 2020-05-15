@@ -53,13 +53,12 @@ void chat_room::deliver(const chat_message& msg) {
     // CSE3310 (server)  messages are sent to all connected clients
     for (auto participant: participants_)
         participant->deliver(msg);
-    
+
 }
 
 
 // message received; validate message and send to game to process
-void chat_room::message_received(const chat_message& message)
-{
+void chat_room::message_received(const chat_message& message) {
     if(!game.has_started()) return;  // handle premature message
     game.processInput(message);
 }

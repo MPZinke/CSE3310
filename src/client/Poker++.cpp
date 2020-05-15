@@ -19,15 +19,12 @@
 #include"GLOBAL.h"
 #include"asio.hpp"
 
-int main(int argc, char* argv[])
-{
-    if (argc != 4)
-    {
+int main(int argc, char* argv[]) {
+    if (argc != 4) {
         std::cerr << "Usage: " << argv[0] << " <host> <port> <id>\n";
         return 1;
     }
-    try
-    {
+    try {
         std::thread send;
 
         std::stringstream inbuffer{};
@@ -43,9 +40,7 @@ int main(int argc, char* argv[])
         DISPLAY main_window(4, io_context, endpoints, inbuffer);
         app->run(main_window);
         send.join();
-    }
-    catch (std::exception& e)
-    {
+    } catch (std::exception& e) {
         std::cerr << "Exception: " << e.what() << "\n";
     }
     return 0;

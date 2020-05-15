@@ -38,7 +38,7 @@ int Card::asInt() {
 /**
  * @brief Turn card in to English text.
  */
-std::string Card::toEnglish(){
+std::string Card::toEnglish() {
     std::stringstream ss;
     ss << RANK_STRINGS.at(rank) << " of " << SUIT_STRINGS.at(suit);
     return ss.str();

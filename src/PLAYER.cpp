@@ -55,8 +55,7 @@ int PLAYER::money() {
 /*
  * @brief Set money.
  */
-void PLAYER::money(int new_amount)
-{
+void PLAYER::money(int new_amount) {
     _money = new_amount;
 }
 
@@ -86,7 +85,7 @@ PLAY PLAYER::current_play() {
  */
 PLAY PLAYER::state_as_play() {
     auto temp = PLAY{PLAYTYPE::MATCHSTART};
-	temp.ID = id();
+    temp.ID = id();
     temp.bet = money();
     temp.currenthand = current_hand();
     return temp;

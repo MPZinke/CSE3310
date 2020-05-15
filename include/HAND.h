@@ -57,17 +57,17 @@ public:
     //std::string operator+(std::string);
 
 private:
-    bool checkFourOfKind(std::vector<Card> cards); 
-    bool checkFullHouse(std::vector<Card> cards); 
-    bool checkFlush(std::vector<Card> cards); 
-    bool checkStraight(std::vector<Card> cards); 
-    bool checkThreeOfAKind(std::vector<Card> cards); 
-    bool checkSpecificPairs(std::vector<Card> cards, int pairs[8]); 
-    bool checkTwoPairs(std::vector<Card> cards); 
-    bool checkSinglePair(std::vector<Card> cards, int pairs[6]); 
-    bool checkOnePair(std::vector<Card> cards); 
-    bool checkSFlush(std::vector<Card> cards); 
-    bool checkRFlush(std::vector<Card> cards); 
+    bool checkFourOfKind(std::vector<Card> cards);
+    bool checkFullHouse(std::vector<Card> cards);
+    bool checkFlush(std::vector<Card> cards);
+    bool checkStraight(std::vector<Card> cards);
+    bool checkThreeOfAKind(std::vector<Card> cards);
+    bool checkSpecificPairs(std::vector<Card> cards, int pairs[8]);
+    bool checkTwoPairs(std::vector<Card> cards);
+    bool checkSinglePair(std::vector<Card> cards, int pairs[6]);
+    bool checkOnePair(std::vector<Card> cards);
+    bool checkSFlush(std::vector<Card> cards);
+    bool checkRFlush(std::vector<Card> cards);
 
     void swap(int ind1, int ind2);
 

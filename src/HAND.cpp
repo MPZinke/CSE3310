@@ -7,13 +7,13 @@
  * @brief Default HAND constructor
  */
 HAND::HAND() {
-    
+
 }
 
 /*
  * @brief Construct hand from cards.
  */
-HAND::HAND(std::vector<Card> inCards): cards{inCards} { 
+HAND::HAND(std::vector<Card> inCards): cards{inCards} {
 }
 
 /*
@@ -26,7 +26,7 @@ HAND::HAND(nlohmann::json j) {
 /*
  * @brief Construct HAND from string (json string).
  */
-HAND::HAND(std::string str) : HAND(nlohmann::json{str}) { 
+HAND::HAND(std::string str) : HAND(nlohmann::json{str}) {
 
 }
 
@@ -55,10 +55,10 @@ bool HAND::checkFourOfKind(std::vector<Card> cards) {
     0!1&2&3&4
     */
     bool flag = false;
-    if(cards[0].rank == cards[3].rank){
+    if(cards[0].rank == cards[3].rank) {
         flag = true;
         swap(3, 4);
-    } else if(cards[1].rank == cards[4].rank){
+    } else if(cards[1].rank == cards[4].rank) {
         flag = true;
     }
     return flag;
@@ -70,10 +70,10 @@ bool HAND::checkFourOfKind(std::vector<Card> cards) {
 bool HAND::checkFullHouse(std::vector<Card> cards) {
     bool flag = false;
     if(cards[0].rank == cards[1].rank && cards[2].rank == cards[4].rank) {
-        flag = true; 
+        flag = true;
     } else if(cards[0].rank == cards[2].rank && cards[3].rank == cards[4].rank) {
         swap(2, 4);
-       flag = true; 
+        flag = true;
     }
     return flag;
 }
@@ -157,7 +157,7 @@ bool HAND::checkTwoPairs(std::vector<Card> cards) {
         flag = true;
         swap(3, 4);
     } else if(checks[1] || checks[2]) {
-        flag = true;    
+        flag = true;
     }
     return  flag;
 }
@@ -199,7 +199,7 @@ bool HAND::checkOnePair(std::vector<Card> cards) {
         swap(3, 4);
     } else if(checks[3]) {
         flag = true;
-    } 
+    }
     return flag;
 }
 
@@ -270,11 +270,11 @@ unsigned char HAND::value() {
 /*
  * @brief Value as a string.
  */
-std::string HAND::valueStr(){
+std::string HAND::valueStr() {
     if(currentValue == 0x00)
         value();
     std::stringstream strstr{};
-    strstr << handNameStrings.at((int) currentValue>>4) << " With Rank of " << (int) (currentValue&0x0F); 
+    strstr << handNameStrings.at((int) currentValue>>4) << " With Rank of " << (int) (currentValue&0x0F);
     return strstr.str();
 }
 
@@ -289,13 +289,13 @@ void from_json(const nlohmann::json& j, HAND& hand) {
 
 std::ostream& operator<<(std::ostream& os, const HAND& hand) {
     nlohmann::json j = hand;
-    return os << j; 
+    return os << j;
 }
 
 /*
  * @brief Swap to cards in hand.
  */
-void HAND::swap(int ind1, int ind2){
+void HAND::swap(int ind1, int ind2) {
     Card temp = cards[ind1];
     cards[ind1] = cards[ind2];
     cards[ind2] = temp;

@@ -45,9 +45,9 @@ bool DECK::still_has_cards() {
 /*
  * @brief Shuffle the deck.
  */
-void DECK::shuffle(){
-    for(int i = 0; i < 52; i++){
-        for(int k = i; k < 52; k++){
+void DECK::shuffle() {
+    for(int i = 0; i < 52; i++) {
+        for(int k = i; k < 52; k++) {
             auto temp = _cards[i];
             int si = (std::rand()%52);
             _cards[i] = _cards[si];
@@ -59,9 +59,9 @@ void DECK::shuffle(){
 /*
  * @brief Shuffle only the remaining cards.
  */
-void DECK::shuffleRemaining(){
-    for(int i = _next_card_in_deck_index; i < (52-_next_card_in_deck_index)/2; i++){
-        for(int k = i; k < 52; k++){
+void DECK::shuffleRemaining() {
+    for(int i = _next_card_in_deck_index; i < (52-_next_card_in_deck_index)/2; i++) {
+        for(int k = i; k < 52; k++) {
             auto temp = _cards[i];
             int si = (std::rand()%(52-_next_card_in_deck_index)) + _next_card_in_deck_index;
             _cards[i] = _cards[si];
@@ -73,16 +73,16 @@ void DECK::shuffleRemaining(){
 /*
  * @brief Reset deck.
  */
-void DECK::mergeDiscarded(){
+void DECK::mergeDiscarded() {
     _next_card_in_deck_index = 0;
     shuffle();
 }
 
-void from_json(nlohmann::json& j, DECK& deck){
+void from_json(nlohmann::json& j, DECK& deck) {
     j.at("cards").get_to(deck._cards);
     j.at("_next_card_in_deck_index").get_to(deck._next_card_in_deck_index);
 }
 
-void to_json(nlohmann::json& j, const DECK& deck){
+void to_json(nlohmann::json& j, const DECK& deck) {
     j = nlohmann::json{{"cards", deck._cards}, {"_next_card_in_deck_index", deck._next_card_in_deck_index}};
 }
