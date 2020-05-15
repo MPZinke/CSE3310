@@ -69,7 +69,22 @@ void ROUND::process_play(nlohmann::json playJson){
         play.ID = _remaining_players[_current_player]->id();
         add_message_to_queue(_current_player, PLAY{});
     }
-
+    for(int i = 0; i < (int) _remaining_players.size(); i++){
+        auto &recipient = _remaining_players[i];
+        for(int k = 0; k < (int) _remaining_players.size(); k++){
+            auto &dataOf = _remaining_players[k];
+            if(i == k){
+                PLAY play = recipient->state_as_play();
+                play.type = PLAYTYPE::UPDATE;
+                add_message_to_queue(i, (nlohmann::json) play);
+            } else {
+                PLAY play{UPDATE};
+                play.ID = dataOf->id();
+                play.bet = dataOf->money();
+                add_message_to_queue(i, (nlohmann::json) play);
+            }
+        }
+    }
     std::cout << "Next player: " << _current_player << "\tID: " << current_player->id() << "\tNext round: " << _round_number << std::endl << std::endl;  //TESTING
     if(is_finished()) finish_round();
 }

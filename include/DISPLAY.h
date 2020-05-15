@@ -49,6 +49,7 @@ public:
 	std::vector<std::string> get_cards(PLAY play);
 	void add_money(PLAY play);
 	void set_initial(PLAY play);
+    void update(PLAY play);
 
 
 	void add_cards_to_player(std::vector<std::string> card_names);
@@ -71,6 +72,7 @@ private:
 	Gtk::Box* main_box;
 
 	std::stringstream &inbuffer;
+    std::vector<std::string> ids;
 
 	// ———————————— OTHER PLAYERS & POT ————————————
 

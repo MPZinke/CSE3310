@@ -238,6 +238,10 @@ void DISPLAY::do_read_body() {
 					{
 						set_initial(play);
 					}
+                    else if(play.type == UPDATE)
+					{
+						update(play);
+					}
 					// main_box->show_all();
 				}
 				catch(std::exception& e){
@@ -276,7 +280,20 @@ void DISPLAY::set_initial(PLAY play){
 	_player_number = stoi(play.ID);
 	_user_cards = get_cards(play);
     user->change_chip_amount(play.bet);
+}
 
+void DISPLAY::update(PLAY play){
+    if(std::to_string(_player_number) != play.ID){
+        auto where = std::find(ids.begin(), ids.end(), play.ID);
+        if(where == ids.end()){
+            ids.push_back(play.ID);
+        }
+        int index = std::distance(ids.begin(), where);
+        dynamic_cast<CARD_PLAYER*>(all_players[index+1])->change_chip_amount(play.bet);
+    } else {
+        _user_cards = get_cards(play);
+        user->change_chip_amount(play.bet);
+    }
 }
 
 void DISPLAY::do_write() {
