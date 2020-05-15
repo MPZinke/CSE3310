@@ -43,7 +43,7 @@ private:
     int _round_number;
     int _round_phase = 0;  // whether the round is betting or trading (even bet; odd trade) 5 = end
     std::vector<PLAYER*> &_remaining_players;
-    MessageQueue* message_queue;
+    MessageQueue &message_queue;
     DECK _deck;
 
     int _current_pot;

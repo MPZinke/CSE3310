@@ -32,9 +32,9 @@ void GAME_SERVER::start_game() {
     currentRound = new ROUND(0, players, &message_queue);
 
     for(int i = 0; i < (int) players.size(); i++) {
-        PLAY play = players[i]->state_as_play();
-        play.type = MATCHSTART;
-        currentRound->add_message_to_queue(i, (nlohmann::json) play);
+        PLAY init = players[i]->state_as_play();
+        init.type = MATCHSTART;
+        currentRound->add_message_to_queue(i, (nlohmann::json) init);
         for(int k = 0; k < (int) players.size(); k++) {
             auto &dataOf = players[k];
             if(i != k) {
@@ -97,7 +97,7 @@ void GAME_SERVER::send_queued_messages() {
     while(message_queue.size()) {
         auto message = message_queue[0].begin();
         participants[message->first]->deliver(message->second);
-        std::cout << "OUTGOING PACKET: " << message->second.body() << std::endl;
+        std::cout << "OUTGOING PACKET: " << message->second.getJson() << std::endl;
         message_queue.erase(message_queue.begin());
     }
 }

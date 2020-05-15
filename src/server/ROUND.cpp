@@ -7,7 +7,7 @@ const int ROUND::ANTE = 1;
  * @brief Round constructor, builds a new round for game loop.
  */
 ROUND::ROUND(int round_number, std::vector<PLAYER*> &remaining_players, MessageQueue* queue_ptr)
-    : _round_number{round_number}, _remaining_players{remaining_players}, message_queue{queue_ptr}, _current_player{0} {
+    : _round_number{round_number}, _remaining_players{remaining_players}, message_queue{*queue_ptr}, _current_player{0} {
     _deck = DECK();
     _deck.shuffle();
     for(unsigned int x = 0; x < _remaining_players.size(); x++) {
@@ -31,25 +31,25 @@ void ROUND::process_play(nlohmann::json playJson) {
     }*/
     //PROCESS CURRENT PLAY
     switch(play.type) {
-    case PLAYTYPE::RESIGN:
-        remove_current_player();
-        break;
-    case PLAYTYPE::FOLD:
-        _player_folds[_current_player] = true;
-        break;
-    case PLAYTYPE::TRADE: {
-        if(currently_taking_bets()) return remove_current_player();  // CHEATER! (bad UI)
-        _remaining_players[_current_player]->trade(play.tradedCards, _deck);
-        break;
-    }
-    case PLAYTYPE::BET: {
-        if(!currently_taking_bets()) return remove_current_player();  // CHEATER! (bad UI)
-        current_player->money(current_player->money() - play.bet);  // decrement money
-        if(play.bet < highest_bet()) {
-            play.bet = highest_bet() - play.bet;  // they still need to match the other player's bet
-            return add_message_to_queue(play);  // stay on current player and request more $$
+        case PLAYTYPE::RESIGN:
+            remove_current_player();
+            break;
+        case PLAYTYPE::FOLD:
+            _player_folds[_current_player] = true;
+            break;
+        case PLAYTYPE::TRADE: {
+            if(currently_taking_bets()) return remove_current_player();  // CHEATER! (bad UI)
+            _remaining_players[_current_player]->trade(play.tradedCards, _deck);
+            break;
         }
-        break;
+        case PLAYTYPE::BET: {
+            if(!currently_taking_bets()) return remove_current_player();  // CHEATER! (bad UI)
+            current_player->money(current_player->money() - play.bet);  // decrement money
+            if(play.bet < highest_bet()) {
+                play.bet = highest_bet() - play.bet;  // they still need to match the other player's bet
+                return add_message_to_queue(play);  // stay on current player and request more $$
+            }
+            break;
     }
     default:
         break;
@@ -60,8 +60,9 @@ void ROUND::process_play(nlohmann::json playJson) {
     if((unsigned int)_current_player == _remaining_players.size()) {
         _current_player %= _remaining_players.size();
         _round_phase++;
-        int required_bet = 0;  //TODO: bet amount
-    }
+        //int required_bet = 0;  //TODO: bet amount
+    } 
+    if(is_finished()) finish_round();
     for(int i = 0; i < (int) _remaining_players.size(); i++) {
         auto &recipient = _remaining_players[i];
         for(int k = 0; k < (int) _remaining_players.size(); k++) {
@@ -78,14 +79,12 @@ void ROUND::process_play(nlohmann::json playJson) {
             }
         }
     }
-
     PLAY start{TURNSTART};
     start.phase = _round_phase%2==1;
     start.bet = highest_bet();
     add_message_to_queue(_current_player, start);
 
     std::cout << "Next player: " << _current_player << "\tID: " << current_player->id() << "\tNext round: " << _round_number << std::endl << std::endl;  //TESTING
-    if(is_finished()) finish_round();
 }
 
 /*
@@ -95,7 +94,7 @@ void ROUND::add_message_to_queue(PLAY current_play) {
     current_play.ID = _remaining_players[_current_player]->id();
     nlohmann::json message = current_play;
     std::cout << "MESSAGE QUEUED: " << message << std::endl;
-    message_queue->push_back({{_current_player, chat_message{message}}});
+    message_queue.push_back({{_current_player, chat_message{message}}});
 }
 
 /*
@@ -105,7 +104,7 @@ void ROUND::add_message_to_queue(int player, PLAY play) {
     if(play.ID.length() == 0) play.ID = _remaining_players[player]->id();
     nlohmann::json message = play;
     std::cout << "MESSAGE QUEUED: " << message << std::endl;
-    message_queue->push_back({{player, chat_message{message}}});
+    message_queue.push_back({{player, chat_message{message}}});
 }
 
 
@@ -126,7 +125,25 @@ bool ROUND::is_finished() {
 /*
  * @brief Remove current player from the round.
  */
-void ROUND::remove_current_player() {
+void ROUND::remove_current_player() { 
+    for(int i = message_queue.size()-1; i >= 0; i--){
+        auto tuple = message_queue[i].begin();
+        nlohmann::json j = tuple->second.getJson();
+        bool readd = false;
+        if(tuple->first > _current_player){
+            readd = true;
+        }
+        if(j.get<PLAY>().ID > std::to_string(_current_player)){
+            j = tuple->second.getJson();
+            j["ID"] = std::to_string(std::stoi(j["ID"].get<std::string>())-1);
+            readd = true;
+        }
+        if(readd) add_message_to_queue(tuple->first-1, j);
+        if(tuple->first == _current_player){
+            message_queue.erase(message_queue.begin()+i);
+        }
+    }
+
     for(unsigned int x = _current_player; x < _remaining_players.size() - 1; x++) {
         _player_folds[x] = _player_folds[x+1];
         _player_bets[x] = _player_bets[x+1];
